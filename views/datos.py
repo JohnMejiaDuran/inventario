@@ -4,7 +4,7 @@ import flet as ft
 class Datos(ft.Container):
     def __init__(self, page):
         super().__init__()
-        self.title = "Datos"
+        page.title = "Datos"
         self.page = page
         self.width = "100%"
         self.height = "100%"
