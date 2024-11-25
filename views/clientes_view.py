@@ -48,8 +48,3 @@ class ClientesView(ft.UserControl):
             self.message.value = "Por favor, ingrese tanto el nombre como el NIT."
         self.update()
 
-# Ejemplo de uso
-def main(page: ft.Page):
-    page.add(ClientesView(page))
-
-ft.app(target=main)

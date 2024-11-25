@@ -3,7 +3,7 @@ from routes.router import init_router
 from database.db import Base, engine
 from database.models.clientes import Cliente
 
-async def main(page: ft.Page):
+def main(page: ft.Page):
     page.title = "Inventario"
     page.theme_mode = ft.ThemeMode.LIGHT
     page.window_maximized = True
@@ -15,7 +15,7 @@ async def main(page: ft.Page):
     init_router(page)
     
     # Set the initial route to "/"
-    await page.go_async("/")
+    page.go("/")
 
 if __name__ == "__main__":
     ft.app(target=main)
