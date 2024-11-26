@@ -1,67 +1,60 @@
 import flet as ft
 from sqlalchemy.orm import sessionmaker
-from sqlalchemy.exc import IntegrityError
-from database.db import engine, Base
+from database.db import engine
 from database.models.clientes import Cliente
 
-# Crear una sesión
 Session = sessionmaker(bind=engine)
 session = Session()
-
 
 class ClientesView(ft.UserControl):
     def __init__(self, page):
         super().__init__()
         self.page = page
         self.page.title = "Clientes"
+        self.init_controls()
+
+    def init_controls(self):
         # Navigation
         self.go_home = ft.TextButton(text="Atrás", on_click=self.go_to_datos)
-        # Modal for editing
+        
+        # Form inputs
+        self.nombre_input = ft.TextField(label="Nombre")
+        self.nit_input = ft.TextField(label="Nit")
+        self.estado_input = ft.Checkbox(label="Activo", value=True)
+        self.message = ft.Text()
+        self.save_button = ft.ElevatedButton(text="Guardar Cliente", on_click=self.guardar_cliente)
+        
+        # Modal controls
         self.modal_nombre = ft.TextField(label="Nombre")
         self.modal_nit = ft.TextField(label="Nit")
         self.modal_estado = ft.Checkbox(label="Activo", value=True)
         self.modal_text = ft.Text("")
+        
         # Edit Modal
         self.edit_modal = ft.AlertDialog(
             modal=True,
             title=ft.Text("Editar Cliente"),
-            content=ft.Column(
-                [self.modal_nombre, self.modal_nit, self.modal_estado, self.modal_text]
-            ),
+            content=ft.Column([self.modal_nombre, self.modal_nit, self.modal_estado, self.modal_text]),
             actions=[
                 ft.TextButton("Cancelar", on_click=self.cerrar_modal),
                 ft.TextButton("Guardar", on_click=self.actualizar_cliente),
             ],
             actions_alignment=ft.MainAxisAlignment.END,
         )
-        # Form inputs for new client
-        self.nombre_input = ft.TextField(label="Nombre")
-        self.nit_input = ft.TextField(label="Nit")
-        self.estado_input = ft.Checkbox(label="Activo", value=True)
-        # Message display
-        self.message = ft.Text()
-        # Buttons
-        self.save_button = ft.ElevatedButton(
-            text="Guardar Cliente", on_click=self.guardar_cliente
-        )
-        # Selected client tracking
-        self.cliente_seleccionado = None
+
         # Data table
         self.data_table = ft.DataTable(
             columns=[
+                ft.DataColumn(label=ft.Text("#")),
                 ft.DataColumn(label=ft.Text("Nombre")),
                 ft.DataColumn(label=ft.Text("NIT")),
                 ft.DataColumn(label=ft.Text("Estado")),
                 ft.DataColumn(label=ft.Text("Acciones")),
             ],
-            rows=[],
+            rows=[]
         )
 
     def build(self):
-        # Load clients when building the view
-
-        self.cargar_clientes()
-
         return ft.Column(
             controls=[
                 self.go_home,
@@ -71,14 +64,13 @@ class ClientesView(ft.UserControl):
                 self.estado_input,
                 self.save_button,
                 self.message,
-                ft.Text("Lista de Clientes", size=20, weight=ft.FontWeight.BOLD),
-                self.data_table,
+                self.data_table
             ]
         )
-        
-        
-        
 
+    def did_mount(self):
+        self.cargar_clientes()
+        
     def go_to_datos(self, e):
         self.page.go("/datos")
 
@@ -209,16 +201,17 @@ class ClientesView(ft.UserControl):
 
             # Clear existing rows and repopulate
             self.data_table.rows.clear()
-            for cliente in clientes:
+            for index, cliente in enumerate(clientes, 1):
                 # Create edit button for each row
-                edit_button = ft.TextButton(
-                    text="Editar",
+                edit_button = ft.IconButton(
+                    ft.icons.EDIT,
                     on_click=lambda e, c=cliente: self.abrir_modal_edicion(c),
                 )
 
                 self.data_table.rows.append(
                     ft.DataRow(
                         cells=[
+                            ft.DataCell(ft.Text(str(index))),
                             ft.DataCell(ft.Text(cliente.nombre)),
                             ft.DataCell(ft.Text(cliente.nit)),
                             ft.DataCell(

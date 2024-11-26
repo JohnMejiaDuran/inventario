@@ -2,6 +2,7 @@ import flet as ft
 from routes.router import init_router
 from database.db import Base, engine
 from database.models.clientes import Cliente
+from database.models.minas import Mina
 
 def main(page: ft.Page):
     page.title = "Inventario"
