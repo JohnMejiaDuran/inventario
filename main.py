@@ -6,7 +6,7 @@ from database.models.clientes import Cliente
 def main(page: ft.Page):
     page.title = "Inventario"
     page.theme_mode = ft.ThemeMode.LIGHT
-    page.window_maximized = True
+    page.window.maximized = True
 
     # Crear las tablas en la base de datos
     Base.metadata.create_all(engine)
