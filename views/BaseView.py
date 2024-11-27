@@ -2,6 +2,7 @@
 
 import flet as ft
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy.exc import IntegrityError
 import threading
 import time
 
@@ -192,7 +193,7 @@ class BaseView(ft.Container):
 
 
     def guardar_entidad(self, e):
-        """Save a new entity."""
+        """Guarda una nueva entidad."""
         datos = {}
         for campo, control in self.form_inputs.items():
             if isinstance(control, ft.TextField):
@@ -213,7 +214,6 @@ class BaseView(ft.Container):
                 session.add(nueva_entidad)
                 session.commit()
                 self.message.value = f"{self.entity_name} guardado exitosamente."
-                print(f"{self.entity_name} guardado: {nueva_entidad}")  # Debug
                 # Limpiar los campos
                 for control in self.form_inputs.values():
                     if isinstance(control, ft.TextField):
@@ -223,15 +223,19 @@ class BaseView(ft.Container):
                     elif isinstance(control, ft.Dropdown):
                         control.value = None
                 self.cargar_entidades()
+            except IntegrityError as ex:
+                session.rollback()
+                if 'UNIQUE constraint failed' in str(ex.orig):
+                    self.message.value = f"Error: Ya existe un {self.entity_name.lower()} con ese nombre."
+                else:
+                    self.message.value = f"Error al guardar {self.entity_name.lower()}: {ex}"
+                print(f"Error al guardar {self.entity_name.lower()}: {ex}")  # Debug
             except Exception as ex:
                 session.rollback()
-                self.message.value = (
-                    f"Error al guardar {self.entity_name.lower()}: {ex}"
-                )
+                self.message.value = f"Error al guardar {self.entity_name.lower()}: {ex}"
                 print(f"Error al guardar {self.entity_name.lower()}: {ex}")  # Debug
         else:
-            self.message.value = f"Por favor ingrese todos los campos son obligatorios."
-            print("Campos obligatorios faltantes al guardar.")  # Debug
+            self.message.value = "Por favor ingresa todos los campos obligatorios."
         self.page.update()
 
     def abrir_modal_edicion(self, entidad):
@@ -325,7 +329,7 @@ class BaseView(ft.Container):
         print(f"Modal de edición abierto para {self.entity_name}: {entidad}")  # Debug
 
     def actualizar_entidad(self, modal_controles, modal_text):
-        """Update the selected entity with the edited data."""
+        """Actualiza la entidad seleccionada con los datos editados."""
         if self.entidad_seleccionada:
             datos = {}
             for campo, control in modal_controles.items():
@@ -351,20 +355,19 @@ class BaseView(ft.Container):
                     self.cerrar_modal()
                     self.cargar_entidades()
                     self.message.value = f"{self.entity_name} actualizado exitosamente."
-                    print(
-                        f"{self.entity_name} actualizado: {self.entidad_seleccionada}"
-                    )  # Debug
+                except IntegrityError as ex:
+                    session.rollback()
+                    if 'UNIQUE constraint failed' in str(ex.orig):
+                        modal_text.value = f"Error: Ya existe un {self.entity_name.lower()} con ese nombre."
+                    else:
+                        modal_text.value = f"Error al actualizar {self.entity_name.lower()}: {ex}"
+                    print(f"Error al actualizar {self.entity_name.lower()}: {ex}")  # Debug
                 except Exception as ex:
                     session.rollback()
-                    modal_text.value = (
-                        f"Error al actualizar {self.entity_name.lower()}: {ex}"
-                    )
-                    print(
-                        f"Error al actualizar {self.entity_name.lower()}: {ex}"
-                    )  # Debug
+                    modal_text.value = f"Error al actualizar {self.entity_name.lower()}: {ex}"
+                    print(f"Error al actualizar {self.entity_name.lower()}: {ex}")  # Debug
             else:
-                modal_text.value = f"Por favor ingrese todos los campos obligatorios."
-                print("Campos obligatorios faltantes al actualizar.")  # Debug
+                modal_text.value = "Por favor ingresa todos los campos obligatorios."
         self.page.update()
 
     def cerrar_modal(self, e=None):
