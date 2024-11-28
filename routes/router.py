@@ -2,7 +2,8 @@ import flet as ft
 from views.home_view import HomeView
 from views.datos import Datos
 from views.clientes_view import ClientesView
-from views.minas_view import MinasView  # Agrega esta línea
+from views.minas_view import MinasView  
+from views.lote_view import LoteView  
 
 def init_router(page: ft.Page):
     def route_change(_):
@@ -42,6 +43,15 @@ def init_router(page: ft.Page):
                     "/minas",
                     [
                         MinasView(page)
+                    ]
+                )
+            )
+        elif page.route == "/lotes":
+            page.views.append(
+                ft.View(
+                    "/lotes",
+                    [
+                        LoteView(page)
                     ]
                 )
             )

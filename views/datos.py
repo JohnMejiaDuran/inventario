@@ -31,7 +31,7 @@ class Datos(ft.Container):
                         bgcolor="pink"
                     ),
                     ft.Container(
-                        content=ft.Text("Lotes"),
+                        content=ft.TextButton("Lotes", on_click=lambda _:self.page.go("/lotes")),
                         width=200,
                         height=200,
                         bgcolor="grey"

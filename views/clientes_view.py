@@ -6,12 +6,13 @@ class ClientesView(ft.Container):
         super().__init__()
         self.page = page
         self.controlador = ControlCliente()
-        
         page.title = "Clientes"
         # Navigation button
+        
         self.go_home = ft.TextButton(text="Atrás", on_click=self.ir_atras)
         self.modal_open = False
         self.modal_edit = None
+        
         # Input fields
         self.insert_cliente = ft.TextField(label="Cliente", expand=True)
         self.insert_nit = ft.TextField(label="Nit", expand=True)
@@ -19,14 +20,12 @@ class ClientesView(ft.Container):
         # Active status checkbox
         self.estado_cliente = ft.Checkbox(label="Activo", value=True)
         
-        
         # Edit cliente
         self.cliente_seleccionado = None
         self.modal_nombre = ft.TextField(label="Nombre")
         self.modal_nit = ft.TextField(label="Nit")
         self.modal_estado = ft.Checkbox(label="Activo", value=True)
         
-
         # Save button with custom click handler
         self.button_save = ft.ElevatedButton(
             text="Guardar cliente",
@@ -42,6 +41,7 @@ class ClientesView(ft.Container):
             ],
             rows=[]
         )
+        
         # Main content layout
         self.content = ft.Column(
             controls=[
@@ -60,9 +60,6 @@ class ClientesView(ft.Container):
                 )
             ],
         )
-        
-        
-        
         self.cargar_clientes()
         
     def abrir_modal_editar(self, e, cliente):
@@ -131,10 +128,9 @@ class ClientesView(ft.Container):
         print("Modal de edición cerrado.")  # Debug
     
     def actualizar_cliente(self, e):
-        if not self.cliente_seleccionado:
-            self.mostrar_mensaje("Error: No se ha seleccionado un cliente", es_error=True)
+        if not self.modal_nombre.value or not self.modal_nit.value:
+            self.mostrar_mensaje("Por favor, complete todos los campos", es_error=True)
             return
-
         # Prepare updated client data
         datos_actualizados = {
             "nombre_cliente": self.modal_nombre.value,
@@ -169,7 +165,7 @@ class ClientesView(ft.Container):
         
         # Populate table with client data
         for cliente in clientes:
-            estado_text = "Activo" if cliente.estado else "Inactivo"
+            estado_text = "ACTIVO" if cliente.estado else "INACTIVO"
             estado_text_color = None if cliente.estado else ft.colors.WHITE
             estado_bgcolor = None if cliente.estado else ft.colors.RED_400
             edit_button = ft.TextButton(
@@ -206,7 +202,7 @@ class ClientesView(ft.Container):
         
         # Prepare client data
         datos_cliente = {
-            "nombre_cliente": self.insert_cliente.value,
+            "nombre_cliente": self.insert_cliente.value.upper(),
             "nit": self.insert_nit.value,
             "estado": self.estado_cliente.value
         }

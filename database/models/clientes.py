@@ -9,4 +9,5 @@ class Cliente(Base):
     nit = Column(String(20), nullable=False, unique=True)
     estado = Column(Boolean, default=True)
     
-    minas = relationship("Mina", back_populates="cliente")
+    minas = relationship("Mina", back_populates="clientes")
+    lotes = relationship("Lote", back_populates="clientes")

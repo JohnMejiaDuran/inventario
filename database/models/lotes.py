@@ -10,5 +10,5 @@ class Lote(Base):
     id_mina = Column(Integer, ForeignKey('minas.id'), nullable=False)
     estado = Column(Boolean, default=True)
     
-    cliente = relationship("Cliente", back_populates="lotes")  # Relación con Cliente
-    mina = relationship("Mina", back_populates="lotes")
+    clientes = relationship("Cliente", back_populates="lotes")  # Relación con Cliente
+    minas = relationship("Mina", back_populates="lotes")

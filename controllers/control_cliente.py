@@ -67,3 +67,6 @@ class ControlCliente:
             session.commit()
             return True
         return False
+    
+    def obtener_cliente_por_id(self, cliente_id):
+        return session.query(Cliente).get(cliente_id)
