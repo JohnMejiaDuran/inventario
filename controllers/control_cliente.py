@@ -1,6 +1,7 @@
 from database.db import session
 from database.models.clientes import Cliente
 from sqlalchemy.exc import IntegrityError
+from database.models.minas import Mina
 
 class ControlCliente:
     def obtener_clientes(self):
@@ -10,10 +11,14 @@ class ControlCliente:
         try:
             # Check for existing client with same name or NIT
             existing_name = session.query(Cliente).filter_by(nombre_cliente=datos['nombre_cliente']).first()
+            existing_prefijo = session.query(Cliente).filter_by(prefijo_cliente=datos['prefijo_cliente']).first()
             existing_nit = session.query(Cliente).filter_by(nit=datos['nit']).first()
 
             if existing_name:
                 raise ValueError(f"Ya existe un cliente con el nombre '{datos['nombre_cliente']}'")
+            
+            if existing_prefijo:
+                raise ValueError(f"Ya existe un cliente con el prefijo '{datos['prefijo_cliente']}'")
             
             if existing_nit:
                 raise ValueError(f"Ya existe un cliente con el NIT '{datos['nit']}'")
@@ -32,28 +37,41 @@ class ControlCliente:
             cliente = session.query(Cliente).get(cliente_id)
             if not cliente:
                 return None
-
+            old_nombre = cliente.nombre_cliente
             # Check for name conflicts with other clients
             name_conflict = session.query(Cliente).filter(
                 Cliente.nombre_cliente == datos.get('nombre_cliente'),
-                Cliente.id != cliente_id
+                Cliente.id_cliente != cliente_id
             ).first()
-
+            
+            prefijo_conflict = session.query(Cliente).filter(
+                Cliente.prefijo_cliente == datos.get('prefijo_cliente'),
+                Cliente.id_cliente != cliente_id
+            ).first()
+            
             # Check for NIT conflicts with other clients
             nit_conflict = session.query(Cliente).filter(
                 Cliente.nit == datos.get('nit'),
-                Cliente.id != cliente_id
+                Cliente.id_cliente != cliente_id
             ).first()
 
             if name_conflict:
                 raise ValueError(f"Ya existe otro cliente con el nombre '{datos['nombre_cliente']}'")
+            
+            if prefijo_conflict:
+                raise ValueError(f"Ya existe otro cliente con el prefijo '{datos['prefijo_cliente']}'")
             
             if nit_conflict:
                 raise ValueError(f"Ya existe otro cliente con el NIT '{datos['nit']}'")
 
             for key, value in datos.items():
                 setattr(cliente, key, value)
-            session.commit()
+                
+            if old_nombre != datos.get('nombre_cliente'):
+                session.query(Mina).filter(Mina.id_cliente == old_nombre).update(
+                    {Mina.id_cliente: datos['nombre_cliente']}
+                )
+                session.commit()
             return cliente
 
         except IntegrityError:

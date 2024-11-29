@@ -15,6 +15,7 @@ class ClientesView(ft.Container):
         
         # Input fields
         self.insert_cliente = ft.TextField(label="Cliente", expand=True)
+        self.inser_prefijo = ft.TextField(label="Prefijo", expand=True)
         self.insert_nit = ft.TextField(label="Nit", expand=True)
         
         # Active status checkbox
@@ -23,6 +24,7 @@ class ClientesView(ft.Container):
         # Edit cliente
         self.cliente_seleccionado = None
         self.modal_nombre = ft.TextField(label="Nombre")
+        self.modal_prefijo = ft.TextField(label="Prefijo")
         self.modal_nit = ft.TextField(label="Nit")
         self.modal_estado = ft.Checkbox(label="Activo", value=True)
         
@@ -35,6 +37,7 @@ class ClientesView(ft.Container):
             columns=[
                 ft.DataColumn(ft.Text("")),
                 ft.DataColumn(ft.Text("Nombre")),
+                ft.DataColumn(ft.Text("Prefijo")),
                 ft.DataColumn(ft.Text("Nit")),
                 ft.DataColumn(ft.Text("Estado")),
                 ft.DataColumn(ft.Text("Acciones"))
@@ -47,7 +50,7 @@ class ClientesView(ft.Container):
             controls=[
                 self.go_home,
                 ft.Text("Nuevo cliente", size=20, weight=ft.FontWeight.BOLD),
-                ft.Row([self.insert_cliente, self.insert_nit]),
+                ft.Row([self.insert_cliente,self.inser_prefijo, self.insert_nit]),
                 self.estado_cliente,
                 self.button_save,
                 ft.Column(
@@ -133,14 +136,15 @@ class ClientesView(ft.Container):
             return
         # Prepare updated client data
         datos_actualizados = {
-            "nombre_cliente": self.modal_nombre.value,
+            "nombre_cliente": self.modal_nombre.value.upper(),
+            "prefijo_cliente": self.modal_prefijo.value.upper(),
             "nit": self.modal_nit.value,
             "estado": self.modal_estado.value
         }
 
         try:
             # Use the controller to update the client
-            cliente_actualizado = self.controlador.actualizar_cliente(self.cliente_seleccionado.id, datos_actualizados)
+            cliente_actualizado = self.controlador.actualizar_cliente(self.cliente_seleccionado.id_cliente, datos_actualizados)
             
             if cliente_actualizado:
                 # Reload the clients table
@@ -174,8 +178,9 @@ class ClientesView(ft.Container):
                 )
             row = ft.DataRow(
                 cells=[
-                    ft.DataCell(ft.Text(str(cliente.id))),
+                    ft.DataCell(ft.Text(str(cliente.id_cliente))),
                     ft.DataCell(ft.Text(cliente.nombre_cliente)),
+                    ft.DataCell(ft.Text(cliente.prefijo_cliente)),
                     ft.DataCell(ft.Text(cliente.nit)),
                     ft.DataCell(ft.Container(
                         content=ft.Text(
@@ -203,6 +208,7 @@ class ClientesView(ft.Container):
         # Prepare client data
         datos_cliente = {
             "nombre_cliente": self.insert_cliente.value.upper(),
+            "prefijo_cliente": self.inser_prefijo.value.upper(),
             "nit": self.insert_nit.value,
             "estado": self.estado_cliente.value
         }
@@ -213,6 +219,7 @@ class ClientesView(ft.Container):
             self.cargar_clientes()
             # Clear input fields after successful save
             self.insert_cliente.value = ""
+            self.inser_prefijo.value = ""
             self.insert_nit.value = ""
             self.estado_cliente.value = True
             

@@ -37,7 +37,7 @@ class Datos(ft.Container):
                         bgcolor="grey"
                     ),
                     ft.Container(
-                        content=ft.Text("Productos"),
+                        content=ft.Text("Referencias"),
                         width=200,
                         height=200,
                         bgcolor="blue"

@@ -19,6 +19,7 @@ class MinasView(ft.Container):
             options=[
                 ft.dropdown.Option(cliente.nombre_cliente)
                 for cliente in self.controlador_cliente.obtener_clientes()
+                if cliente.estado
             ],
             expand=True
         )
@@ -88,23 +89,37 @@ class MinasView(ft.Container):
     
     def cargar_minas(self):
         minas = self.controlador_mina.obtener_minas()
-        self.data_table.rows = [
-            ft.DataRow(
+        
+        self.data_table.rows.clear()
+        
+        for mina in minas:
+            estado_text = "ACTIVO" if mina.estado else "INACTIVO"
+            estado_text_color = None if mina.estado else ft.colors.WHITE
+            estado_bgcolor = None if mina.estado else ft.colors.RED_400
+            edit_button = ft.TextButton(
+                text="Editar",
+                on_click=lambda _, mina=mina: self.abrir_modal_editar(_, mina)
+            )
+            row = ft.DataRow(
                 cells=[
-                    ft.DataCell(ft.Text(str(mina.id))),
+                    ft.DataCell(ft.Text(str(mina.id_mina))),
                     ft.DataCell(ft.Text(mina.nombre_mina)),
                     ft.DataCell(ft.Text(mina.id_cliente)),
-                    ft.DataCell(ft.Text("ACTIVO" if mina.estado else "INACTIVO")),
                     ft.DataCell(
-                        ft.TextButton(
-                            text="Editar"
-                            ,on_click=lambda _, mina=mina: self.abrir_modal_editar(_, mina
-                        )
-                    ))
-                ]
-            )
-            for mina in minas
-        ]
+                        ft.Container(
+                            content=ft.Text(
+                                estado_text,
+                                color=estado_text_color
+                            ),
+                            bgcolor=estado_bgcolor,
+                            padding=ft.padding.all(5)
+                        )),
+                        ft.DataCell(edit_button)
+                        ]
+                    )
+            self.data_table.rows.append(row)
+            
+        self.page.update()
         
     def guardar_mina(self, e):
         if not self.insert_mina.value or not self.cliente.value:
@@ -138,13 +153,14 @@ class MinasView(ft.Container):
         cliente_options = [
             ft.dropdown.Option(key=str(cliente.nombre_cliente))
             for cliente in self.controlador_cliente.obtener_clientes()
+            if cliente.estado
         ]
         
         # Actualizar el dropdown de clientes para reflejar las opciones
         self.modal_cliente = ft.Dropdown(
             label="Cliente",
             options=cliente_options,
-            value=str(mina.id_cliente) if mina.id_cliente else None  # Establecer el cliente actual como valor seleccionado
+            value=str(mina.id_cliente) if mina.id_cliente else "Cliente inactivo"  # Establecer el cliente actual como valor seleccionado
         )
         
         self.modal_edit = ft.Container(
@@ -174,6 +190,7 @@ class MinasView(ft.Container):
         )
         
         self.modal_mina.value = mina.nombre_mina
+        self.modal_estado.value = mina.estado
         self.page.overlay.append(self.modal_edit)
         self.modal_edit.open = True
         self.page.update()
@@ -188,14 +205,14 @@ class MinasView(ft.Container):
             self.mostrar_mensaje("Por favor, complete todos los campos.", es_error=True)
             return
         datos_actualizados = {
-            "nombre_mina": nombre_mina,
+            "nombre_mina": nombre_mina.upper(),
             "estado": estado,
             "id_cliente": id_cliente
         }
 
         try:
             # Update the mine record using your controller
-            self.controlador_mina.actualizar_mina(self.mina_seleccionada.id, datos_actualizados)
+            self.controlador_mina.actualizar_mina(self.mina_seleccionada.id_mina, datos_actualizados)
             self.mostrar_mensaje("Mina actualizada exitosamente.")
             self.modal_edit.open = False
             self.cerrar_modal()

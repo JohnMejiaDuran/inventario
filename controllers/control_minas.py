@@ -40,7 +40,7 @@ class ControlMina:
             datos = {
                 'nombre_mina': nombre_mina.strip(),  # Remove leading/trailing whitespace
                 'estado': estado,
-                'id_cliente': cliente.id  # Use the cliente's ID for the foreign key
+                'id_cliente': cliente.id_cliente  # Use the cliente's ID for the foreign key
             }
             
             # Check for existing mine with same name
@@ -67,7 +67,7 @@ class ControlMina:
             # Check for name conflicts with other mines
             name_conflict = session.query(Mina).filter(
                 Mina.nombre_mina == datos.get('nombre_mina'),
-                Mina.id != mina_id
+                Mina.id_mina != mina_id
             ).first()
 
             if name_conflict:
