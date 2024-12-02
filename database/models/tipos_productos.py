@@ -8,4 +8,4 @@ class TipoProducto(Base):
     nombre_tipo_producto = Column(String(100), nullable=False)
     estado_tipo_producto = Column(Integer, nullable=False)
     
-    anuncios_cargas = relationship("AnuncioCarga", back_populates="tipos_productos")
+    anuncios_cargas = relationship("AnuncioCarga", back_populates="tipo_producto")

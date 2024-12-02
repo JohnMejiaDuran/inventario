@@ -8,4 +8,4 @@ class TipoUnidad(Base):
     nombre_tipo_unidad = Column(String(100), nullable=False)
     estado_tipo_unidad = Column(Integer, nullable=False)
     
-    anuncios_cargas = relationship("AnuncioCarga", back_populates="tipos_unidades")
+    anuncios_cargas = relationship("AnuncioCarga", back_populates="tipos_unidad")

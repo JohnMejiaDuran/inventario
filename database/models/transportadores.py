@@ -8,7 +8,6 @@ class Transportador(Base):
     nombre_transportador = Column(String(200), nullable=False, unique=True)
     estado = Column(Boolean, default=True)
     
-    anuncios_cargas = relationship("AnuncioCarga", back_populates="transportadores")
     
     
     

@@ -4,6 +4,7 @@ from views.datos import Datos
 from views.clientes_view import ClientesView
 from views.minas_view import MinasView  
 from views.lote_view import LoteView  
+from views.transportadores_view import TransportadoresView
 
 def init_router(page: ft.Page):
     def route_change(_):
@@ -52,6 +53,15 @@ def init_router(page: ft.Page):
                     "/lotes",
                     [
                         LoteView(page)
+                    ]
+                )
+            )
+        elif page.route == "/transportadores":
+            page.views.append(
+                ft.View(
+                    "/transportadoes",
+                    [
+                        TransportadoresView(page)
                     ]
                 )
             )

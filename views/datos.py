@@ -46,7 +46,7 @@ class Datos(ft.Container):
                 ),
                 ft.Row([
                     ft.Container(
-                        content=ft.TextButton("Transportadores", on_click=lambda _:self.page.go("/")),
+                        content=ft.TextButton("Transportadores", on_click=lambda _:self.page.go("/transportadores")),
                         width=200,
                         height=200,
                         border_radius=20,

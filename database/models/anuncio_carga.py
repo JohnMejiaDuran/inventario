@@ -13,8 +13,9 @@ class AnuncioCarga(Base):
     unidades_anunciadas = Column(Float, nullable=False)
     peso_anunciado = Column(Float, nullable=False)
     
-    transportadores = relationship("Transportador", back_populates="anuncios_cargas")
-    productos = relationship("Producto", back_populates="anuncios_cargas")
-    tipos_productos = relationship("TipoProducto", back_populates="anuncios_cargas")
-    tipos_unidades = relationship("TipoUnidad", back_populates="anuncios_cargas")
+    # Add back_populates to both sides of the relationship
+    transportador = relationship("Transportador", back_populates="anuncios_cargas")
+    producto = relationship("Producto", back_populates="anuncios_cargas")
+    tipo_producto = relationship("TipoProducto", back_populates="anuncios_cargas")
+    tipo_unidade = relationship("TipoUnidad", back_populates="anuncios_cargas")
     
