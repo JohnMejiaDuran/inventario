@@ -23,14 +23,14 @@ class Datos(ft.Container):
                         width=200,
                         height=200,
                         border_radius=20,
-                        bgcolor="red"
+                        bgcolor="white"
                     ),
                     ft.Container(
                         content=ft.TextButton("Minas", on_click=lambda _:self.page.go("/minas")),
                         width=200,
                         height=200,
                         border_radius=20,
-                        bgcolor="pink"
+                        bgcolor="white"
                     ),
                     ft.Container(
                         content=ft.TextButton("Lotes", on_click=lambda _:self.page.go("/lotes")),
@@ -43,6 +43,81 @@ class Datos(ft.Container):
                     
                 ],
                     alignment=ft.MainAxisAlignment.CENTER,
-                       )
-                
-        ], )
+                ),
+                ft.Row([
+                    ft.Container(
+                        content=ft.TextButton("Transportadores", on_click=lambda _:self.page.go("/")),
+                        width=200,
+                        height=200,
+                        border_radius=20,
+                        bgcolor="white"
+                    ),
+                    ft.Container(
+                        content=ft.TextButton("Productos", on_click=lambda _:self.page.go("/")),
+                        width=200,
+                        height=200,
+                        border_radius=20,
+                        bgcolor="white"
+                    ),
+                    ft.Container(
+                        content=ft.TextButton("Tipo de productos", on_click=lambda _:self.page.go("/")),
+                        width=200,
+                        height=200,
+                        border_radius=20,
+                        bgcolor="white"
+                    ),
+                ],
+                    alignment=ft.MainAxisAlignment.CENTER,
+                ),
+                ft.Row([
+                    ft.Container(
+                        content=ft.TextButton("Tipo de unidades", on_click=lambda _:self.page.go("/")),
+                        width=200,
+                        height=200,
+                        border_radius=20,
+                        bgcolor="white"
+                    ),
+                    ft.Container(
+                        content=ft.TextButton("Tipo de movimientos", on_click=lambda _:self.page.go("/")),
+                        width=200,
+                        height=200,
+                        border_radius=20,
+                        bgcolor="white"
+                    ),
+                    ft.Container(
+                        content=ft.TextButton("Categorías", on_click=lambda _:self.page.go("/")),
+                        width=200,
+                        height=200,
+                        border_radius=20,
+                        bgcolor="white"
+                    ),
+                ],
+                    alignment=ft.MainAxisAlignment.CENTER,
+                ),
+                ft.Row([
+                    ft.Container(
+                        content=ft.TextButton("Bodegas", on_click=lambda _:self.page.go("/")),
+                        width=200,
+                        height=200,
+                        border_radius=20,
+                        bgcolor="white"
+                    ),
+                    ft.Container(
+                        content=ft.TextButton("Viajes", on_click=lambda _:self.page.go("/")),
+                        width=200,
+                        height=200,
+                        border_radius=20,
+                        bgcolor="white"
+                    ),
+                    ft.Container(
+                        content=ft.TextButton("Barcazas", on_click=lambda _:self.page.go("/")),
+                        width=200,
+                        height=200,
+                        border_radius=20,
+                        bgcolor="white"
+                    ),
+                ],
+                    alignment=ft.MainAxisAlignment.CENTER,
+                ),
+            ])
+            
