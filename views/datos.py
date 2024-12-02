@@ -8,7 +8,7 @@ class Datos(ft.Container):
         self.page = page
         self.width = "100%"
         self.height = "100%"
-        self.bgcolor = "#f0f123"
+        self.bgcolor = "#f5f5f5"
         self.alignment = ft.alignment.center
         self.go_home = ft.TextButton(text="Inicio", on_click=lambda _:self.page.go("/"))
         
@@ -22,34 +22,27 @@ class Datos(ft.Container):
                         content=ft.TextButton("Clientes", on_click=lambda _:self.page.go("/clientes")),
                         width=200,
                         height=200,
+                        border_radius=20,
                         bgcolor="red"
                     ),
                     ft.Container(
                         content=ft.TextButton("Minas", on_click=lambda _:self.page.go("/minas")),
                         width=200,
                         height=200,
+                        border_radius=20,
                         bgcolor="pink"
                     ),
                     ft.Container(
                         content=ft.TextButton("Lotes", on_click=lambda _:self.page.go("/lotes")),
                         width=200,
                         height=200,
-                        bgcolor="grey"
-                    ),
-                    ft.Container(
-                        content=ft.Text("Referencias"),
-                        width=200,
-                        height=200,
-                        bgcolor="blue"
-                    ),
-                    ft.Container(
-                        content=ft.Text("Barcazas", text_align="center"),
-                        width=200,
-                        height=200,
+                        border_radius=20,
                         bgcolor="white",
-                        alignment=ft.alignment.center
+                        border = ft.border_radius.all(20)
                     ),
+                    
                 ],
-                       alignment=ft.alignment.center)
+                    alignment=ft.MainAxisAlignment.CENTER,
+                       )
                 
         ], )

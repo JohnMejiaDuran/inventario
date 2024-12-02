@@ -8,6 +8,8 @@ class Lote(Base):
     nombre_lote = Column(String(200), nullable=False)
     id_cliente = Column(Integer, ForeignKey('clientes.id_cliente'), nullable=False)
     id_mina = Column(Integer, ForeignKey('minas.id_mina'), nullable=True)
+    no_contrato = Column(String(20), nullable=True)
+    booking = Column(String(20), nullable=True)
 
     
     clientes = relationship("Cliente", back_populates="lotes")  # Relación con Cliente

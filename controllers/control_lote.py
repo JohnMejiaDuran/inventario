@@ -9,10 +9,10 @@ class ControlLote:
     def crear_lote(self, datos):
         try:
             # Check for existing lot with same name
-            existing_name = session.query(Lote).filter_by(nombre_lote=datos['nombre_lote']).first()
+            # existing_name = session.query(Lote).filter_by(nombre_lote=datos['nombre_lote']).first()
 
-            if existing_name:
-                raise ValueError(f"Ya existe un lote con el nombre '{datos['nombre_lote']}'")
+            # if existing_name:
+            #     raise ValueError(f"Ya existe un lote con el nombre '{datos['nombre_lote']}'")
             
             nuevo_lote = Lote(**datos)
             session.add(nuevo_lote)
@@ -29,14 +29,14 @@ class ControlLote:
             if not lote:
                 return None
 
-            # Check for name conflicts with other lots
-            name_conflict = session.query(Lote).filter(
-                Lote.nombre_lote == datos.get('nombre_lote'),
-                Lote.id != lote_id
-            ).first()
+            # # Check for name conflicts with other lots
+            # name_conflict = session.query(Lote).filter(
+            #     Lote.nombre_lote == datos.get('nombre_lote'),
+            #     Lote.id != lote_id
+            # ).first()
 
-            if name_conflict:
-                raise ValueError(f"Ya existe otro lote con el nombre '{datos['nombre_lote']}'")
+            # if name_conflict:
+            #     raise ValueError(f"Ya existe otro lote con el nombre '{datos['nombre_lote']}'")
             
             for key, value in datos.items():
                 setattr(lote, key, value)

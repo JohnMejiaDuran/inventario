@@ -177,9 +177,11 @@ class MinasView(ft.Container):
                         self.modal_cliente,
                         self.modal_estado,
                         ft.Row([
+                            ft.TextButton("Cancelar", on_click=self.cerrar_modal),
                             ft.TextButton("Actualizar", on_click=self.actualizar_mina_seleccionada),
-                            ft.TextButton("Cancelar", on_click=self.cerrar_modal)
-                        ])
+                            
+                        ],
+                            alignment=ft.MainAxisAlignment.END)
                     ],
                     alignment=ft.MainAxisAlignment.START,
                     horizontal_alignment=ft.CrossAxisAlignment.STRETCH,

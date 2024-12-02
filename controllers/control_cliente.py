@@ -2,6 +2,7 @@ from database.db import session
 from database.models.clientes import Cliente
 from sqlalchemy.exc import IntegrityError
 from database.models.minas import Mina
+from database.models.lotes import Lote
 
 class ControlCliente:
     def obtener_clientes(self):
@@ -68,10 +69,19 @@ class ControlCliente:
                 setattr(cliente, key, value)
                 
             if old_nombre != datos.get('nombre_cliente'):
+                # Update Mina records
                 session.query(Mina).filter(Mina.id_cliente == old_nombre).update(
-                    {Mina.id_cliente: datos['nombre_cliente']}
+                    {Mina.id_cliente: datos['nombre_cliente']},
+                    synchronize_session='fetch'
                 )
-                session.commit()
+                
+                # Update Lote records
+                session.query(Lote).filter(Lote.id_cliente == old_nombre).update(
+                    {Lote.id_cliente: datos['nombre_cliente']},
+                    synchronize_session='fetch'
+                )
+            
+            session.commit()
             return cliente
 
         except IntegrityError:

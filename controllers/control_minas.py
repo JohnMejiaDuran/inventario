@@ -2,6 +2,7 @@ from database.db import session
 from database.models.minas import Mina
 from sqlalchemy.exc import IntegrityError
 from database.models.clientes import Cliente
+from database.models.lotes import Lote
 
 class ControlMina:
     def obtener_minas(self):
@@ -60,6 +61,8 @@ class ControlMina:
         
     def actualizar_mina(self, mina_id, datos):
         try:
+            old_nombre = session.query(Mina).get(mina_id).nombre_mina
+            
             mina = session.query(Mina).get(mina_id)
             if not mina:
                 return None
@@ -75,6 +78,9 @@ class ControlMina:
             
             for key, value in datos.items():
                 setattr(mina, key, value)
+                
+            if old_nombre != datos.get('nombre_mina'):
+                session.query(Lote).filter(Lote.id_mina == old_nombre).update({Lote.id_mina: datos['nombre_mina']}, synchronize_session='fetch')
             session.commit()
             return mina
 

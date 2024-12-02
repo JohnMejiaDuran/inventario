@@ -15,7 +15,7 @@ class ClientesView(ft.Container):
         
         # Input fields
         self.insert_cliente = ft.TextField(label="Cliente", expand=True)
-        self.inser_prefijo = ft.TextField(label="Prefijo", expand=True)
+        self.insert_prefijo = ft.TextField(label="Prefijo", expand=True)
         self.insert_nit = ft.TextField(label="Nit", expand=True)
         
         # Active status checkbox
@@ -50,7 +50,7 @@ class ClientesView(ft.Container):
             controls=[
                 self.go_home,
                 ft.Text("Nuevo cliente", size=20, weight=ft.FontWeight.BOLD),
-                ft.Row([self.insert_cliente,self.inser_prefijo, self.insert_nit]),
+                ft.Row([self.insert_cliente,self.insert_prefijo, self.insert_nit]),
                 self.estado_cliente,
                 self.button_save,
                 ft.Column(
@@ -73,13 +73,14 @@ class ClientesView(ft.Container):
             bgcolor=ft.colors.BLACK45,
             content=ft.Container(
                 width=500,
-                height=300,
+                height=500,
                 bgcolor=ft.colors.WHITE,
                 content=ft.Column(
                     controls=[
                         ft.Text("Editar cliente", size=20, weight=ft.FontWeight.BOLD),
                         self.modal_nombre,
                         self.modal_nit,
+                        self.modal_prefijo,
                         self.modal_estado,
                         ft.Row(
                             controls=[
@@ -99,6 +100,7 @@ class ClientesView(ft.Container):
         
         self.modal_nombre.value = cliente.nombre_cliente
         self.modal_nit.value = cliente.nit
+        self.modal_prefijo.value = cliente.prefijo_cliente
         self.modal_estado.value = cliente.estado
         self.page.overlay.append(self.modal_edit)
         self.modal_open = True
@@ -131,7 +133,7 @@ class ClientesView(ft.Container):
         print("Modal de edición cerrado.")  # Debug
     
     def actualizar_cliente(self, e):
-        if not self.modal_nombre.value or not self.modal_nit.value:
+        if not self.modal_nombre.value or not self.modal_nit.value or not self.modal_prefijo.value:
             self.mostrar_mensaje("Por favor, complete todos los campos", es_error=True)
             return
         # Prepare updated client data
@@ -201,14 +203,14 @@ class ClientesView(ft.Container):
     def guardar_cliente(self, e):
         """Guarda un nuevo cliente con los datos ingresados."""
         # Validate inputs
-        if not self.insert_cliente.value or not self.insert_nit.value:
+        if not self.insert_cliente.value or not self.insert_nit.value or not self.insert_prefijo.value:
             self.mostrar_mensaje("Por favor, complete todos los campos", es_error=True)
             return
         
         # Prepare client data
         datos_cliente = {
             "nombre_cliente": self.insert_cliente.value.upper(),
-            "prefijo_cliente": self.inser_prefijo.value.upper(),
+            "prefijo_cliente": self.insert_prefijo.value.upper(),
             "nit": self.insert_nit.value,
             "estado": self.estado_cliente.value
         }
@@ -219,7 +221,7 @@ class ClientesView(ft.Container):
             self.cargar_clientes()
             # Clear input fields after successful save
             self.insert_cliente.value = ""
-            self.inser_prefijo.value = ""
+            self.insert_prefijo.value = ""
             self.insert_nit.value = ""
             self.estado_cliente.value = True
             
