@@ -71,31 +71,6 @@ class Datos(ft.Container):
                 ),
                 ft.Row([
                     ft.Container(
-                        content=ft.TextButton("Tipo de unidades", on_click=lambda _:self.page.go("/")),
-                        width=200,
-                        height=200,
-                        border_radius=20,
-                        bgcolor="white"
-                    ),
-                    ft.Container(
-                        content=ft.TextButton("Tipo de movimientos", on_click=lambda _:self.page.go("/")),
-                        width=200,
-                        height=200,
-                        border_radius=20,
-                        bgcolor="white"
-                    ),
-                    ft.Container(
-                        content=ft.TextButton("Categorías", on_click=lambda _:self.page.go("/")),
-                        width=200,
-                        height=200,
-                        border_radius=20,
-                        bgcolor="white"
-                    ),
-                ],
-                    alignment=ft.MainAxisAlignment.CENTER,
-                ),
-                ft.Row([
-                    ft.Container(
                         content=ft.TextButton("Bodegas", on_click=lambda _:self.page.go("/")),
                         width=200,
                         height=200,
