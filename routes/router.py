@@ -5,6 +5,8 @@ from views.clientes_view import ClientesView
 from views.minas_view import MinasView  
 from views.lote_view import LoteView  
 from views.transportadores_view import TransportadoresView
+from views.productos_view import ProductosView
+from views.tipo_producto_view import TipoProductoView
 
 def init_router(page: ft.Page):
     def route_change(_):
@@ -65,6 +67,25 @@ def init_router(page: ft.Page):
                     ]
                 )
             )
+        elif page.route == "/productos":
+            page.views.append(
+                ft.View(
+                    "/productos",
+                    [
+                        ProductosView(page)
+                    ]
+                )
+            )
+        elif page.route == "/tipoproductos":
+            page.views.append(
+                ft.View(
+                    "/tipoproductos",
+                    [
+                        TipoProductoView(page)
+                    ]
+                )
+            )
+
         
         page.update()
 

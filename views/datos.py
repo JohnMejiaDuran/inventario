@@ -53,14 +53,14 @@ class Datos(ft.Container):
                         bgcolor="white"
                     ),
                     ft.Container(
-                        content=ft.TextButton("Productos", on_click=lambda _:self.page.go("/")),
+                        content=ft.TextButton("Productos", on_click=lambda _:self.page.go("/productos")),
                         width=200,
                         height=200,
                         border_radius=20,
                         bgcolor="white"
                     ),
                     ft.Container(
-                        content=ft.TextButton("Tipo de productos", on_click=lambda _:self.page.go("/")),
+                        content=ft.TextButton("Tipo de productos", on_click=lambda _:self.page.go("/tipoproductos")),
                         width=200,
                         height=200,
                         border_radius=20,

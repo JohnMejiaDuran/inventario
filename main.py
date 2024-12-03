@@ -4,6 +4,8 @@ from database.db import Base, engine
 from database.models.clientes import Cliente
 from database.models.minas import Mina
 from database.models.transportadores import Transportador
+from database.models.productos import Producto
+from database.models.tipos_productos import TipoProducto
 
 def main(page: ft.Page):
     page.title = "Inventario"
