@@ -8,7 +8,7 @@ class Datos(ft.Container):
         self.page = page
         self.width = "100%"
         self.height = "100%"
-        self.bgcolor = "#f5f5f5"
+        
         self.alignment = ft.alignment.center
         self.go_home = create_home_button(page, lambda _: page.go("/"))
         
