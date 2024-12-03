@@ -6,6 +6,7 @@ from database.models.minas import Mina
 from database.models.transportadores import Transportador
 from database.models.productos import Producto
 from database.models.tipos_productos import TipoProducto
+from database.models.anuncio_carga import AnuncioCarga
 
 def main(page: ft.Page):
     page.title = "Inventario"

@@ -1,4 +1,5 @@
 from sqlalchemy import Column, Integer, String, Boolean
+from sqlalchemy.orm import relationship
 from ..db import Base
 
 class TipoProducto(Base):
@@ -7,3 +8,4 @@ class TipoProducto(Base):
     nombre_tipo_producto = Column(String(100), nullable=False)
     estado_tipo_producto = Column(Boolean, default=True)
     
+    anuncio_cargas = relationship("AnuncioCarga", back_populates="tipo_productos")

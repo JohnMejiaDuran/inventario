@@ -14,3 +14,4 @@ class Lote(Base):
     
     clientes = relationship("Cliente", back_populates="lotes")  # Relación con Cliente
     minas = relationship("Mina", back_populates="lotes")
+    anuncio_cargas = relationship("AnuncioCarga", back_populates="lotes")

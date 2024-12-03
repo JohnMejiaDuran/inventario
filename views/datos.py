@@ -1,5 +1,5 @@
 import flet as ft
-
+from components.go_home import create_home_button
 
 class Datos(ft.Container):
     def __init__(self, page):
@@ -10,7 +10,7 @@ class Datos(ft.Container):
         self.height = "100%"
         self.bgcolor = "#f5f5f5"
         self.alignment = ft.alignment.center
-        self.go_home = ft.TextButton(text="Inicio", on_click=lambda _:self.page.go("/"))
+        self.go_home = create_home_button(page, lambda _: page.go("/"))
         
         self.content = ft.Column([
                 ft.Row([
@@ -60,7 +60,7 @@ class Datos(ft.Container):
                         bgcolor="white"
                     ),
                     ft.Container(
-                        content=ft.TextButton("Tipo de productos", on_click=lambda _:self.page.go("/tipoproductos")),
+                        content=ft.TextButton("Tipo de productos", on_click=lambda _:self.page.go("/tipo_productos")),
                         width=200,
                         height=200,
                         border_radius=20,

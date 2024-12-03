@@ -54,27 +54,21 @@ class LoteView(ft.Container):
             text="Guardar lote",
             on_click=self.guardar_lote
         )
-        self.data_table = ft.Container(
-            expand=True,
-            content=ft.DataTable(
-                width=float('inf'),
-                columns=[
-                    ft.DataColumn(ft.Text(""),),
-                    ft.DataColumn(ft.Text("Lote"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
-                    ft.DataColumn(ft.Text("Cliente"),heading_row_alignment=ft.MainAxisAlignment.CENTER),
-                    ft.DataColumn(ft.Text("Mina"),heading_row_alignment=ft.MainAxisAlignment.CENTER),
-                    ft.DataColumn(ft.Text("No. Contrato"),heading_row_alignment=ft.MainAxisAlignment.CENTER),
-                    ft.DataColumn(ft.Text("Booking"),heading_row_alignment=ft.MainAxisAlignment.CENTER),
-                    ft.DataColumn(ft.Text("Acciones"),heading_row_alignment=ft.MainAxisAlignment.CENTER)
-                ],
-                rows=[],
-                vertical_lines=ft.BorderSide(width=1, color=ft.colors.GREY_300),
-                horizontal_lines=ft.BorderSide(width=1, color=ft.colors.GREY_300),
-                column_spacing=10,
-                
-            ),
-            padding=10,
-            alignment=ft.alignment.center
+        self.data_table = ft.DataTable(
+            width=float('inf'),
+            columns=[
+                ft.DataColumn(ft.Text("")),
+                ft.DataColumn(ft.Text("Lote"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
+                ft.DataColumn(ft.Text("Cliente"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
+                ft.DataColumn(ft.Text("Mina"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
+                ft.DataColumn(ft.Text("No. Contrato"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
+                ft.DataColumn(ft.Text("Booking"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
+                ft.DataColumn(ft.Text("Acciones"), heading_row_alignment=ft.MainAxisAlignment.CENTER)
+            ],
+            rows=[],
+            vertical_lines=ft.BorderSide(width=1, color=ft.colors.GREY_300),
+            horizontal_lines=ft.BorderSide(width=1, color=ft.colors.GREY_300),
+            
         )
         
         self.tabla_scrollable = ft.Container(
@@ -219,9 +213,13 @@ class LoteView(ft.Container):
     
     
     def cargar_lotes(self):
-        """Loads lotes into the table with scroll support"""
+        """Carga los lotes en la tabla."""
         lotes = self.controlador_lote.obtener_lotes()
-        self.data_table.rows = []
+
+        # Limpiar filas existentes
+        self.data_table.rows.clear()
+
+        # Poblar la tabla con datos de los lotes
         for lote in lotes:
             self.data_table.rows.append(
                 ft.DataRow(
@@ -235,9 +233,7 @@ class LoteView(ft.Container):
                         ft.DataCell(
                             ft.Row([
                                 ft.TextButton("Editar", on_click=lambda e, current_lote=lote: self.abrir_modal_editar(e, current_lote)),
-                            ],
-                                spacing=5
-                            )
+                            ])
                         )
                     ]
                 )

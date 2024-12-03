@@ -7,6 +7,8 @@ from views.lote_view import LoteView
 from views.transportadores_view import TransportadoresView
 from views.productos_view import ProductosView
 from views.tipo_producto_view import TipoProductoView
+from views.anuncio_carga_view import AnuncioCargaView
+
 
 def init_router(page: ft.Page):
     def route_change(_):
@@ -76,12 +78,21 @@ def init_router(page: ft.Page):
                     ]
                 )
             )
-        elif page.route == "/tipoproductos":
+        elif page.route == "/tipo_productos":
             page.views.append(
                 ft.View(
-                    "/tipoproductos",
+                    "/tipo_productos",
                     [
                         TipoProductoView(page)
+                    ]
+                )
+            )
+        elif page.route == "/anunciar_carga":
+            page.views.append(
+                ft.View(
+                    "/anunciar_carga",
+                    [
+                        AnuncioCargaView(page)
                     ]
                 )
             )
