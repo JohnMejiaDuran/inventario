@@ -3,6 +3,7 @@ from routes.router import init_router
 from database.db import Base, engine
 from database.models.clientes import Cliente
 from database.models.minas import Mina
+from database.models.transportadores import Transportador
 
 def main(page: ft.Page):
     page.title = "Inventario"

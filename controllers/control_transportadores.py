@@ -8,6 +8,11 @@ class ControlTransportador:
 
     def crear_transportador(self, datos):
         try:
+            existing_name = session.query(Transportador).filter_by(nombre_transportador=datos['nombre_transportador']).first()
+            
+            if existing_name:
+                raise ValueError(f"Ya existe un transportador con el nombre '{datos['nombre_transportador']}'")
+            
             nuevo_transportador = Transportador(**datos)
             session.add(nuevo_transportador)
             session.commit()
@@ -22,7 +27,14 @@ class ControlTransportador:
             transportador = session.query(Transportador).get(transportador_id)
             if not transportador:
                 return None
-
+            name_conflict = session.query(Transportador).filter(
+                Transportador.nombre_transportador == datos.get('nombre_transportador'),
+                Transportador.id_transportador != transportador_id
+            ).first()
+            
+            if name_conflict:
+                raise ValueError(f"Ya existe otro transportador con el nombre '{datos['nombre_transportador']}'")
+            
             for key, value in datos.items():
                 setattr(transportador, key, value)
             session.commit()

@@ -6,7 +6,7 @@ class Transportador(Base):
     __tablename__ = 'transportadores'
     id_transportador = Column(Integer, primary_key=True, autoincrement=True)
     nombre_transportador = Column(String(200), nullable=False, unique=True)
-    estado = Column(Boolean, default=True)
+    estado_transportador = Column(Boolean, default=True)
     
     
     
