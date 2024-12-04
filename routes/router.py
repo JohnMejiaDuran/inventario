@@ -11,6 +11,7 @@ from views.anuncio_carga_view import AnuncioCargaView
 from views.barcazas_view import BarcazaView
 from views.bodegas_view import BodegaView
 from views.viajes_view import ViajeView
+from views.movimientos_view import MovimientoView
 
 def init_router(page: ft.Page):
     def route_change(_):
@@ -122,6 +123,15 @@ def init_router(page: ft.Page):
                     "/viajes",
                     [
                         ViajeView(page)
+                    ]
+                )
+            )
+        elif page.route == "/movimientos":
+            page.views.append(
+                ft.View(
+                    "/movimientos",
+                    [
+                        MovimientoView(page)
                     ]
                 )
             )

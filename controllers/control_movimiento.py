@@ -2,7 +2,7 @@ from database.db import session
 from database.models.movimientos import Movimiento
 from sqlalchemy.exc import IntegrityError
 
-class ControlMovimiento:
+class ControlMovimientos:
     def obtener_movimientos(self):
         return session.query(Movimiento).all()
 

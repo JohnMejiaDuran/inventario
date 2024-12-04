@@ -19,21 +19,21 @@ class Datos(ft.Container):
                 ]),
                 ft.Row([
                     ft.Container(
-                        content=ft.TextButton("Clientes", on_click=lambda _:self.page.go("/clientes")),
+                        content=ft.TextButton("CLIENTES", on_click=lambda _:self.page.go("/clientes")),
                         width=200,
                         height=200,
                         border_radius=20,
                         bgcolor="white"
                     ),
                     ft.Container(
-                        content=ft.TextButton("Minas", on_click=lambda _:self.page.go("/minas")),
+                        content=ft.TextButton("MINAS", on_click=lambda _:self.page.go("/minas")),
                         width=200,
                         height=200,
                         border_radius=20,
                         bgcolor="white"
                     ),
                     ft.Container(
-                        content=ft.TextButton("Lotes", on_click=lambda _:self.page.go("/lotes")),
+                        content=ft.TextButton("LOTES", on_click=lambda _:self.page.go("/lotes")),
                         width=200,
                         height=200,
                         border_radius=20,
@@ -46,21 +46,21 @@ class Datos(ft.Container):
                 ),
                 ft.Row([
                     ft.Container(
-                        content=ft.TextButton("Transportadores", on_click=lambda _:self.page.go("/transportadores")),
+                        content=ft.TextButton("TRANSPORTADORES", on_click=lambda _:self.page.go("/transportadores")),
                         width=200,
                         height=200,
                         border_radius=20,
                         bgcolor="white"
                     ),
                     ft.Container(
-                        content=ft.TextButton("Productos", on_click=lambda _:self.page.go("/productos")),
+                        content=ft.TextButton("PRODUCTOS", on_click=lambda _:self.page.go("/productos")),
                         width=200,
                         height=200,
                         border_radius=20,
                         bgcolor="white"
                     ),
                     ft.Container(
-                        content=ft.TextButton("Tipo de productos", on_click=lambda _:self.page.go("/tipo_productos")),
+                        content=ft.TextButton("TIPO DE PRODUCTOS", on_click=lambda _:self.page.go("/tipo_productos")),
                         width=200,
                         height=200,
                         border_radius=20,
@@ -71,21 +71,21 @@ class Datos(ft.Container):
                 ),
                 ft.Row([
                     ft.Container(
-                        content=ft.TextButton("Bodegas", on_click=lambda _:self.page.go("/bodegas")),
+                        content=ft.TextButton("BODEGAS", on_click=lambda _:self.page.go("/bodegas")),
                         width=200,
                         height=200,
                         border_radius=20,
                         bgcolor="white"
                     ),
                     ft.Container(
-                        content=ft.TextButton("Viajes", on_click=lambda _:self.page.go("/viajes")),
+                        content=ft.TextButton("VIAJES", on_click=lambda _:self.page.go("/viajes")),
                         width=200,
                         height=200,
                         border_radius=20,
                         bgcolor="white"
                     ),
                     ft.Container(
-                        content=ft.TextButton("Barcazas", on_click=lambda _:self.page.go("/barcazas")),
+                        content=ft.TextButton("BARCAZAS", on_click=lambda _:self.page.go("/barcazas")),
                         width=200,
                         height=200,
                         border_radius=20,
