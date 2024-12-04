@@ -71,21 +71,21 @@ class Datos(ft.Container):
                 ),
                 ft.Row([
                     ft.Container(
-                        content=ft.TextButton("Bodegas", on_click=lambda _:self.page.go("/")),
+                        content=ft.TextButton("Bodegas", on_click=lambda _:self.page.go("/bodegas")),
                         width=200,
                         height=200,
                         border_radius=20,
                         bgcolor="white"
                     ),
                     ft.Container(
-                        content=ft.TextButton("Viajes", on_click=lambda _:self.page.go("/")),
+                        content=ft.TextButton("Viajes", on_click=lambda _:self.page.go("/viajes")),
                         width=200,
                         height=200,
                         border_radius=20,
                         bgcolor="white"
                     ),
                     ft.Container(
-                        content=ft.TextButton("Barcazas", on_click=lambda _:self.page.go("/")),
+                        content=ft.TextButton("Barcazas", on_click=lambda _:self.page.go("/barcazas")),
                         width=200,
                         height=200,
                         border_radius=20,

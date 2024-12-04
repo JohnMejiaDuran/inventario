@@ -7,7 +7,7 @@ class AnuncioCarga(Base):
     id_anuncio_carga = Column(Integer, primary_key=True, autoincrement=True)
     id_lote = Column(Integer, ForeignKey("lotes.id_lote"), nullable=False)
     placa_contenedor = Column(String(100), nullable=False)
-    id_transpordor = Column(Integer, ForeignKey("transportadores.id_transportador"), nullable=False)
+    id_transpordor = Column(Integer, ForeignKey("transportadores.id_transportador"), nullable=True)
     id_producto = Column(Integer, ForeignKey("productos.id_producto"), nullable=False)
     id_tipo_producto = Column(Integer, ForeignKey("tipos_productos.id_tipo_producto"), nullable=False)
     tipo_unidad = Column(String(100), nullable=False)

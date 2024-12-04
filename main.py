@@ -7,6 +7,10 @@ from database.models.transportadores import Transportador
 from database.models.productos import Producto
 from database.models.tipos_productos import TipoProducto
 from database.models.anuncio_carga import AnuncioCarga
+from database.models.movimientos import Movimiento
+from database.models.bodegas import Bodega
+from database.models.viajes import Viaje
+from database.models.barcazas import Barcaza
 
 def main(page: ft.Page):
     page.title = "Inventario"

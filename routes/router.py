@@ -8,7 +8,9 @@ from views.transportadores_view import TransportadoresView
 from views.productos_view import ProductosView
 from views.tipo_producto_view import TipoProductoView
 from views.anuncio_carga_view import AnuncioCargaView
-
+from views.barcazas_view import BarcazaView
+from views.bodegas_view import BodegaView
+from views.viajes_view import ViajeView
 
 def init_router(page: ft.Page):
     def route_change(_):
@@ -93,6 +95,33 @@ def init_router(page: ft.Page):
                     "/anunciar_carga",
                     [
                         AnuncioCargaView(page)
+                    ]
+                )
+            )
+        elif page.route == "/barcazas":
+            page.views.append(
+                ft.View(
+                    "/barcazas",
+                    [
+                        BarcazaView(page)
+                    ]
+                )
+            )
+        elif page.route == "/bodegas":
+            page.views.append(
+                ft.View(
+                    "/bodegas",
+                    [
+                        BodegaView(page)
+                    ]
+                )
+            )
+        elif page.route == "/viajes":
+            page.views.append(
+                ft.View(
+                    "/viajes",
+                    [
+                        ViajeView(page)
                     ]
                 )
             )

@@ -26,7 +26,7 @@ class LoteView(ft.Container):
         self.modal_edit = None
         
         # Input fields
-        self.insert_lote = ft.TextField(label="Lote", expand=True)
+        self.insert_lote = ft.TextField(label="Lote", expand=True, bgcolor="white")
         self.insert_cliente = ft.Dropdown(
             label="Cliente", 
             options=[
