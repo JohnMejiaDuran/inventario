@@ -144,10 +144,26 @@ class MovimientoView(ft.Container):
             on_change=self.on_fecha_change
         )
         self.page.overlay.append(self.insert_fecha)
+        
         self.fecha_display = ft.TextField(
             label="Fecha",
             read_only=True,
             expand=True
+        )
+        self.insert_hora = ft.TimePicker(
+            confirm_text="Confirm",
+            error_invalid_text="Time out of range",
+            help_text="Pick your time slot",
+
+        )
+        self.page.overlay.append(self.insert_hora)
+        self.hora_display = ft.TextField(
+            label="Hora",
+            read_only=True,
+            expand=True)
+        self.hora_button = ft.IconButton(
+            icon=ft.icons.ACCESS_TIME,
+            on_click=lambda _: self.insert_hora.pick_time()
         )
         self.fecha_button = ft.IconButton(
             icon=ft.icons.EVENT,
@@ -197,7 +213,7 @@ class MovimientoView(ft.Container):
                 ]),
                 ft.Row([
                     self.stack_fecha,
-                    self.insert_hora_inicio,
+                    self.hora_button,
                     self.insert_hora_fin,
                     self.insert_para
                 ]),
