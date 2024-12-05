@@ -145,14 +145,22 @@ class MovimientoView(ft.Container):
         )
         self.page.overlay.append(self.insert_fecha)
         self.fecha_display = ft.TextField(
-            label="Fecha seleccionada",
+            label="Fecha",
             read_only=True,
             expand=True
         )
-        self.fecha_button = ft.TextButton(
-            text="Seleccionar Fecha",
+        self.fecha_button = ft.IconButton(
+            icon=ft.icons.EVENT,
             on_click=lambda _: self.insert_fecha.pick_date()
         )
+        self.stack_fecha = ft.Stack([
+            self.fecha_display,
+            ft.Container(
+            content=self.fecha_button,
+            alignment=ft.alignment.center_right,
+            padding=ft.padding.only(right=3, top=5)
+        )
+        ],expand=True)
         # Form containers
         self.container_ingreso_terrestre = ft.Container(
             visible=False,
@@ -188,7 +196,7 @@ class MovimientoView(ft.Container):
                     self.insert_neto_bascula
                 ]),
                 ft.Row([
-                    self.fecha_button,
+                    self.stack_fecha,
                     self.insert_hora_inicio,
                     self.insert_hora_fin,
                     self.insert_para
@@ -213,7 +221,7 @@ class MovimientoView(ft.Container):
         selected_date = e.control.value
         if selected_date:
             # Format date as string for display
-            formatted_date = selected_date.strftime("%Y-%m-%d")
+            formatted_date = selected_date.strftime("%d/%m/%Y")
             self.fecha_display.value = formatted_date
             self.page.update()
          
