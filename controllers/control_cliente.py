@@ -69,6 +69,13 @@ class ControlCliente:
                 setattr(cliente, key, value)
                 
             if old_nombre != datos.get('nombre_cliente'):
+                #Update Cliente records
+                session.query(Cliente).filter(Cliente.id_cliente == old_nombre).update(
+                    {Cliente.id_cliente: datos
+                     ['nombre_cliente']},
+                    synchronize_session='fetch'
+                )
+                
                 # Update Mina records
                 session.query(Mina).filter(Mina.id_cliente == old_nombre).update(
                     {Mina.id_cliente: datos['nombre_cliente']},

@@ -1,6 +1,6 @@
 import flet as ft
 from controllers.control_cliente import ControlCliente
-
+import threading
 class ClientesView(ft.Container):
     def __init__(self, page):
         super().__init__()
@@ -12,6 +12,9 @@ class ClientesView(ft.Container):
         self.go_home = ft.TextButton(text="Atrás", on_click=self.ir_atras)
         self.modal_open = False
         self.modal_edit = None
+        
+        self.is_running = True
+        self.start_periodic_refresh()
         
         # Input fields
         self.insert_cliente = ft.TextField(label="Cliente", expand=True)
@@ -64,7 +67,27 @@ class ClientesView(ft.Container):
             ],
         )
         self.cargar_clientes()
+    
+    def start_periodic_refresh(self):
+        """Start a timer to periodically refresh the clients table."""
+        def refresh_timer():
+            if not self.is_running:
+                return
+            
+            # Use page.update() to safely update UI from another thread
+            self.page.run_thread(self.cargar_clientes)
+            
+            # Schedule next refresh
+            if self.is_running:
+                threading.Timer(1, refresh_timer).start()
         
+        # Start the initial timer
+        threading.Timer(2, refresh_timer).start()
+    
+    def dispose(self):
+        """Stop the periodic refresh when the view is disposed."""
+        self.is_running = False
+     
     def abrir_modal_editar(self, e, cliente):
         self.cliente_seleccionado = cliente
         
