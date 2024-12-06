@@ -19,6 +19,7 @@ class MovimientoView(ft.Container):
         self.controlador_producto = ControlProducto()
         self.controlador_tipo_producto = ControlTipoProducto()
         self.controlador_bodegas = ControlBodega()
+        self.nombre_movimiento = ft.Text("Nuevo Movimiento")
         self.insert_cliente = ft.Dropdown(
             label="Selecciona un cliente",
             options=[
@@ -72,8 +73,8 @@ class MovimientoView(ft.Container):
         self.insert_imo = ft.Dropdown(
             label="Seleccione IMO",
             options=[
-                ft.dropdown.Option("IMO 3"),
-                ft.dropdown.Option("IMO 9"),
+                ft.dropdown.Option("3"),
+                ft.dropdown.Option("9"),
             ],
             expand=True
         )
@@ -112,9 +113,6 @@ class MovimientoView(ft.Container):
         self.insert_unidades = ft.TextField(label="Ingresa unidades", expand=True)
         self.insert_neto_bascula = ft.TextField(label="Ingrese Neto Báscula", expand=True)
         
-        self.insert_fecha = ft.TextField(label="Ingrese fecha", expand=True)
-        self.insert_hora_inicio = ft.TextField(label="Ingrese hora inicio", expand=True)
-        self.insert_hora_fin = ft.TextField(label="Ingrese hora fin", expand=True)
         self.insert_para = ft.TextField(label="Ingrese Para", expand=True)
         self.insert_observaciones = ft.TextField(label="Observaciones", expand=True)
         # Button to open modal
@@ -150,21 +148,55 @@ class MovimientoView(ft.Container):
             read_only=True,
             expand=True
         )
+        
         self.insert_hora = ft.TimePicker(
             confirm_text="Confirm",
             error_invalid_text="Time out of range",
             help_text="Pick your time slot",
-
+            on_change=self.on_hora_change
+        )
+        self.insert_hora_fin = ft.TimePicker(
+            confirm_text="Confirm",
+            error_invalid_text="Time out of range",
+            help_text="Pick your time slot",
+            on_change=self.on_hora_fin_change
         )
         self.page.overlay.append(self.insert_hora)
-        self.hora_display = ft.TextField(
-            label="Hora",
+        self.page.overlay.append(self.insert_hora_fin)
+        self.hora_inicio = ft.TextField(
+            label="Hora inicio",
             read_only=True,
             expand=True)
+        self.hora_fin = ft.TextField(
+            label="Hora fin",
+            read_only=True,
+            expand=True)
+        
         self.hora_button = ft.IconButton(
             icon=ft.icons.ACCESS_TIME,
             on_click=lambda _: self.insert_hora.pick_time()
         )
+        self.hora_fin_button = ft.IconButton(
+            icon=ft.icons.ACCESS_TIME,
+            on_click=lambda _: self.insert_hora_fin.pick_time()
+        )
+        self.stack_hora = ft.Stack([
+            
+            self.hora_inicio,
+            ft.Container(
+            content=self.hora_button,
+            alignment=ft.alignment.center_right,
+            padding=ft.padding.only(right=3, top=5)
+            )
+        ], expand=True)
+        self.stack_hora_fin = ft.Stack([
+            self.hora_fin,
+            ft.Container(
+            content=self.hora_fin_button,
+            alignment=ft.alignment.center_right,
+            padding=ft.padding.only(right=3, top=5)
+            )
+        ], expand=True)
         self.fecha_button = ft.IconButton(
             icon=ft.icons.EVENT,
             on_click=lambda _: self.insert_fecha.pick_date()
@@ -213,8 +245,8 @@ class MovimientoView(ft.Container):
                 ]),
                 ft.Row([
                     self.stack_fecha,
-                    self.hora_button,
-                    self.insert_hora_fin,
+                    self.stack_hora,
+                    self.stack_hora_fin,
                     self.insert_para
                 ]),
                 ft.Row([
@@ -240,7 +272,25 @@ class MovimientoView(ft.Container):
             formatted_date = selected_date.strftime("%d/%m/%Y")
             self.fecha_display.value = formatted_date
             self.page.update()
-         
+            
+    def on_hora_change(self, e):
+        """Handle time selection"""
+        selected_time = e.control.value
+        if selected_time:
+            # Format time as string for display
+            formatted_time = selected_time.strftime("%H:%M")
+            self.hora_inicio.value = formatted_time
+            self.page.update()
+    
+    def on_hora_fin_change(self, e):
+        """Handle time selection"""
+        selected_time = e.control.value
+        if selected_time:
+            # Format time as string for display
+            formatted_time = selected_time.strftime("%H:%M")
+            self.hora_fin.value = formatted_time
+            self.page.update()
+            
     def convertir_mayuscula(self, e):
         """Convert text to uppercase as user types"""
         if e.data:  # Check if there's input data
@@ -274,9 +324,9 @@ class MovimientoView(ft.Container):
             ]
         self.page.update()
     
-    def abrir_modal_movimiento(self, e):
+    def abrir_modal_movimiento(self, e, ):
         modal = ft.AlertDialog(
-            title=ft.Text("Nuevo Movimiento"),
+            title=self.nombre_movimiento,
             content=ft.Column(
                 controls=[
                     self.tipo_movimiento,
@@ -308,5 +358,7 @@ class MovimientoView(ft.Container):
     
     def cambiar_tipo_movimiento(self, e):
         # Your existing change handler code
-        self.container_ingreso_terrestre.visible = e.data == "INGRESO TERRESTRE"
+        if e.data == "INGRESO TERRESTRE":
+            self.container_ingreso_terrestre.visible = True
+            self.nombre_movimiento.value = "Nuevo Movimiento Terrestre"
         self.page.update()
