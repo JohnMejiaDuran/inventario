@@ -7,6 +7,7 @@ from controllers.control_productos import ControlProducto
 from controllers.control_tipo_producto import  ControlTipoProducto
 from controllers.control_bodegas import ControlBodega
 import datetime
+from controllers.control_movimiento import ControlMovimientos
 
 class MovimientoView(ft.Container):
     def __init__(self, page):
@@ -19,22 +20,25 @@ class MovimientoView(ft.Container):
         self.controlador_producto = ControlProducto()
         self.controlador_tipo_producto = ControlTipoProducto()
         self.controlador_bodegas = ControlBodega()
+        self.controlador_movimientos = ControlMovimientos()
         self.nombre_movimiento = ft.Text("Nuevo Movimiento")
         self.insert_cliente = ft.Dropdown(
             label="Selecciona un cliente",
             options=[
-                ft.dropdown.Option(cliente.nombre_cliente)
+                ft.dropdown.Option(key=cliente.id_cliente, text=cliente.nombre_cliente)
                 for cliente in self.controlador_cliente.obtener_clientes()
                 if cliente.estado
             ],
                 on_change=self.actualizar_minas,
                 expand=True
             )
+        
         self.insert_mina = ft.Dropdown(
             label="Selecciona una mina",
             on_change=self.actualizar_lotes,
             expand=True
             )
+        
         self.insert_lote = ft.Dropdown(label="Selecciona un lote",expand=True)
         self.insert_placa_contenedor = ft.TextField(label="Placa o contenedor",expand=True, on_change=self.convertir_mayuscula)
         self.insert_tipo_vehiculo = ft.Dropdown(
@@ -47,6 +51,7 @@ class MovimientoView(ft.Container):
             ,expand=True)
         self.insert_transportador = ft.Dropdown(
             label="Selecciona un transportador",
+            max_menu_height=200,
             options=[
                 ft.dropdown.Option(transportador.nombre_transportador)
                 for transportador in self.controlador_transportador.obtener_transportadores()
@@ -113,7 +118,7 @@ class MovimientoView(ft.Container):
         self.insert_unidades = ft.TextField(label="Ingresa unidades", expand=True)
         self.insert_neto_bascula = ft.TextField(label="Ingrese Neto Báscula", expand=True)
         
-        self.insert_para = ft.TextField(label="Ingrese Para", expand=True)
+        self.insert_para = ft.TextField(label="Ingrese Para", value=0, expand=True)
         self.insert_observaciones = ft.TextField(label="Observaciones", expand=True)
         # Button to open modal
         self.nuevo_movimiento_btn = ft.ElevatedButton(
@@ -254,6 +259,27 @@ class MovimientoView(ft.Container):
                 ])
             ]))
         
+        
+        # DATA TABLE MOVIMIENTOS
+        self.data_table = ft.DataTable(
+            columns=[
+                ft.DataColumn(ft.Text("#")),
+                ft.DataColumn(ft.Text("No. \n SERVICIO", text_align="center")),
+                ft.DataColumn(ft.Text("TIPO \n MOVIMIENTO", text_align="center")),
+                ft.DataColumn(ft.Text("CATEGORÍA")),
+                ft.DataColumn(ft.Text("UBICACIÓN")),
+                ft.DataColumn(ft.Text("UNIDADES")),
+                ft.DataColumn(ft.Text("NETO \n BÁSCULA", text_align="center")),
+                ft.DataColumn(ft.Text("FECHA", text_align="center")),
+                ft.DataColumn(ft.Text("HORA \n INICIO", text_align="center")),
+                ft.DataColumn(ft.Text("HORA \n FIN", text_align="center")),
+                ft.DataColumn(ft.Text("ACCIONES")),
+                
+            ],
+            rows=[],
+            vertical_lines=ft.BorderSide(width=1, color=ft.colors.GREY_300),
+            horizontal_lines=ft.BorderSide(width=1, color=ft.colors.GREY_300)
+        )
         # Main content layout
         self.content = ft.Column(
             controls=[
@@ -261,9 +287,12 @@ class MovimientoView(ft.Container):
                     ft.TextButton("Inicio", on_click=lambda e: page.go("/")),
                 ]),
                 self.nuevo_movimiento_btn,
-                # Other controls...
+                ft.Column([
+                    self.data_table
+                ])
             ]
         )
+    
     def on_fecha_change(self, e):
         """Handle date selection"""
         selected_date = e.control.value
@@ -301,30 +330,66 @@ class MovimientoView(ft.Container):
         """Al seleccionar un cliente me trae sus minas """
         cliente_seleccionado = self.insert_cliente.value
         self.insert_mina.options = []
-        # obtener la mina del cliente seleccionado
+        
+        # Obtain all minas and clients
         minas = self.controlador_mina.obtener_minas()
-        minas = [mina for mina in minas if mina.id_cliente == cliente_seleccionado]
-        if minas: 
-            self.insert_mina.options = [
-                ft.dropdown.Option(mina.nombre_mina) for mina in minas
-                if mina.estado 
-            ]
+        clientes = self.controlador_cliente.obtener_clientes()
+        
+        # Find the selected client by ID or name
+        cliente_actual = None
+        for cliente in clientes:
+            if str(cliente.id_cliente) == cliente_seleccionado or cliente.nombre_cliente == cliente_seleccionado:
+                cliente_actual = cliente
+                break
+        
+        if cliente_actual:
+            # Filter minas for this specific client
+            minas_cliente = [mina for mina in minas if mina.id_cliente == cliente_actual.id_cliente]
+            
+            if minas_cliente: 
+                self.insert_mina.options = [
+                    ft.dropdown.Option(key=mina.id_mina, text=mina.nombre_mina) for mina in minas_cliente
+                    if mina.estado 
+                ]
+            else:
+                print(f"No minas found for client name: {cliente_actual.nombre_cliente}")
+        else:
+            print(f"Client not found: {cliente_seleccionado}")
+        
         self.page.update()
+
         
     def actualizar_lotes(self, e):
         """Al seleccionar la mina del cliente me trae sus lotes"""
         mina_seleccionada = self.insert_mina.value
         self.insert_lote.options = []
-        # obtener la mina del cliente seleccionado
+        
+        # Obtain lotes for the selected mine
         lotes = self.controlador_lotes.obtener_lotes()
-        lotes = [lote for lote in lotes if lote.id_mina == mina_seleccionada]
-        if lotes:
-            self.insert_lote.options = [
-                ft.dropdown.Option(lote.nombre_lote) for lote in lotes
-            ]
+        
+        # Find the selected mine
+        minas = self.controlador_mina.obtener_minas()
+        mina_actual = next((mina for mina in minas if str(mina.id_mina) == mina_seleccionada or mina.nombre_mina == mina_seleccionada), None)
+        
+        if mina_actual:
+            # Filter lotes for this specific mine
+            lotes_mina = [lote for lote in lotes if lote.id_mina == mina_actual.id_mina]
+            
+            if lotes_mina:
+                self.insert_lote.options = [
+                    ft.dropdown.Option(key=lote.id_lote, text=lote.nombre_lote) 
+                    for lote in lotes_mina
+                ]
+            else:
+                print(f"No lotes found for mine ID: {mina_actual.id_mina}")
+        else:
+            print(f"Mine not found: {mina_seleccionada}")
+        
         self.page.update()
+        
+            
     
-    def abrir_modal_movimiento(self, e, ):
+    def abrir_modal_movimiento(self, e ):
         modal = ft.AlertDialog(
             title=self.nombre_movimiento,
             content=ft.Column(
@@ -339,7 +404,7 @@ class MovimientoView(ft.Container):
             ),
             actions=[
                 ft.TextButton("Cancelar", on_click=self.cerrar_modal),
-                ft.ElevatedButton("Guardar", on_click=self.guardar_movimiento)
+                ft.ElevatedButton("Guardar", on_click=self.guardar_movimiento_in_terrestre)
             ],
             actions_alignment=ft.MainAxisAlignment.END
         )
@@ -352,9 +417,56 @@ class MovimientoView(ft.Container):
         self.page.dialog.open = False
         self.page.update()
     
-    def guardar_movimiento(self, e):
-        # Add save logic here
-        self.cerrar_modal(e)
+    def mostrar_mensaje(self, mensaje, es_error=False):
+        """Muestra un mensaje utilizando el método de overlay de Flet."""
+        snack_bar = ft.SnackBar(
+            content=ft.Text(mensaje),
+            bgcolor=ft.colors.RED if es_error else ft.colors.GREEN
+        )
+        self.page.overlay.append(snack_bar)
+        snack_bar.open = True
+        self.page.update()
+    
+    def guardar_movimiento_in_terrestre(self, e):
+        # Ensure fecha_obj is a datetime.date object
+        fecha_obj = self.insert_fecha.value  # Assuming this is already a date object
+
+        # Combine date and time to create datetime.datetime objects
+        hora_inicio = datetime.datetime.combine(fecha_obj, self.insert_hora.value)
+        hora_fin = datetime.datetime.combine(fecha_obj, self.insert_hora_fin.value)
+
+        # Calculate tiempo_op
+        tiempo_operativo = (hora_fin - hora_inicio).total_seconds() / 3600 - float(self.insert_para.value)
+
+        tiempo_operativo_rounded = round(tiempo_operativo, 2)
+        
+        prefijo = self.controlador_cliente.obtener_prefijo_cliente(self.insert_cliente.value)
+        no_servicio = f"{prefijo}-{self.insert_producto.value}-{self.insert_lote.value}"
+        # Create a dictionary with the data
+        datos = {
+            "tipo_movimiento": self.tipo_movimiento.value,
+            "unidades": self.insert_unidades.value,
+            "neto_bascula": self.insert_neto_bascula.value,
+            "fecha": fecha_obj,
+            "hora_inicio": hora_inicio,
+            "hora_fin": hora_fin,
+            "para": self.insert_para.value,
+            "tiempo_op": tiempo_operativo_rounded,
+            "observaciones": self.insert_observaciones.value,
+            "id_bodega": self.insert_ubicacion.value,
+            "categoria": self.insert_categoria.value,
+            "id_lote": self.insert_lote.value,
+            "no_servicio": no_servicio
+        }
+        print(tiempo_operativo_rounded)
+        try:
+            self.controlador_movimientos.crear_movimiento(datos)
+            self.mostrar_mensaje("Movimiento guardado correctamente")
+
+            self.cerrar_modal(e)
+        except Exception as e:
+            self.mostrar_mensaje(f"Error al guardar: {str(e)}", es_error=True)
+            print(e)
     
     def cambiar_tipo_movimiento(self, e):
         # Your existing change handler code
@@ -362,3 +474,4 @@ class MovimientoView(ft.Container):
             self.container_ingreso_terrestre.visible = True
             self.nombre_movimiento.value = "Nuevo Movimiento Terrestre"
         self.page.update()
+        

@@ -17,7 +17,7 @@ class MinasView(ft.Container):
         self.cliente = ft.Dropdown(
             label="Cliente",
             options=[
-                ft.dropdown.Option(cliente.nombre_cliente)
+                ft.dropdown.Option(key=cliente.id_cliente, text=cliente.nombre_cliente)
                 for cliente in self.controlador_cliente.obtener_clientes()
                 if cliente.estado
             ],
@@ -31,7 +31,7 @@ class MinasView(ft.Container):
         self.modal_cliente = ft.Dropdown(
             label="Cliente",
             options=[
-                ft.dropdown.Option(cliente.nombre_cliente)
+                ft.dropdown.Option(key=cliente.id_cliente, text=cliente.nombre_cliente)
                 for cliente in self.controlador_cliente.obtener_clientes()
             ],
             ),
@@ -42,7 +42,7 @@ class MinasView(ft.Container):
         )
         self.data_table = ft.DataTable(
             columns=[
-                ft.DataColumn(ft.Text("")),
+                ft.DataColumn(ft.Text("#")),
                 ft.DataColumn(ft.Text("Mina")),
                 ft.DataColumn(ft.Text("Cliente")),
                 ft.DataColumn(ft.Text("Estado")),
@@ -93,6 +93,8 @@ class MinasView(ft.Container):
         self.data_table.rows.clear()
         
         for mina in minas:
+            cliente_nombre = next((cliente.nombre_cliente for cliente in self.controlador_cliente.obtener_clientes() if cliente.id_cliente == mina.id_cliente), "CLIENTE INACTIVO")
+            
             estado_text = "ACTIVO" if mina.estado else "INACTIVO"
             estado_text_color = None if mina.estado else ft.colors.WHITE
             estado_bgcolor = None if mina.estado else ft.colors.RED_400
@@ -104,7 +106,7 @@ class MinasView(ft.Container):
                 cells=[
                     ft.DataCell(ft.Text(str(mina.id_mina))),
                     ft.DataCell(ft.Text(mina.nombre_mina)),
-                    ft.DataCell(ft.Text(mina.id_cliente)),
+                    ft.DataCell(ft.Text(cliente_nombre)),
                     ft.DataCell(
                         ft.Container(
                             content=ft.Text(
@@ -151,7 +153,7 @@ class MinasView(ft.Container):
         
         # Preparar las opciones del dropdown de clientes
         cliente_options = [
-            ft.dropdown.Option(key=str(cliente.nombre_cliente))
+            ft.dropdown.Option(key =cliente.id_cliente,text=cliente.nombre_cliente)
             for cliente in self.controlador_cliente.obtener_clientes()
             if cliente.estado
         ]

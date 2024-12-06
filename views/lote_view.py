@@ -13,7 +13,7 @@ class LoteView(ft.Container):
         self.controlador_mina = ControlMina()
         
         self.filtro_lotes = ft.TextField(
-            label="Filtrar lotes", 
+            label="Filtrar lotes",
             expand=True, 
             on_change=self.filtrar_lotes
         )
@@ -30,7 +30,7 @@ class LoteView(ft.Container):
         self.insert_cliente = ft.Dropdown(
             label="Cliente", 
             options=[
-                ft.dropdown.Option(cliente.nombre_cliente) 
+                ft.dropdown.Option(key=cliente.id_cliente, text=cliente.nombre_cliente) 
                 for cliente in self.controlador_cliente.obtener_clientes()
                 if cliente.estado
             ],
@@ -168,14 +168,32 @@ class LoteView(ft.Container):
         """Al seleccionar un cliente me trae sus minas """
         cliente_seleccionado = self.insert_cliente.value
         self.insert_mina.options = []
-        # obtener la mina del cliente seleccionado
+        
+        # Obtain all minas and clients
         minas = self.controlador_mina.obtener_minas()
-        minas = [mina for mina in minas if mina.id_cliente == cliente_seleccionado]
-        if minas: 
-            self.insert_mina.options = [
-                ft.dropdown.Option(mina.nombre_mina) for mina in minas
-                if mina.estado 
-            ]
+        clientes = self.controlador_cliente.obtener_clientes()
+        
+        # Find the selected client by ID or name
+        cliente_actual = None
+        for cliente in clientes:
+            if str(cliente.id_cliente) == cliente_seleccionado or cliente.nombre_cliente == cliente_seleccionado:
+                cliente_actual = cliente
+                break
+        
+        if cliente_actual:
+            # Filter minas for this specific client
+            minas_cliente = [mina for mina in minas if mina.id_cliente == cliente_actual.id_cliente]
+            
+            if minas_cliente: 
+                self.insert_mina.options = [
+                    ft.dropdown.Option(key=mina.id_mina, text=mina.nombre_mina) for mina in minas_cliente
+                    if mina.estado 
+                ]
+            else:
+                print(f"No minas found for client name: {cliente_actual.nombre_cliente}")
+        else:
+            print(f"Client not found: {cliente_seleccionado}")
+        
         self.page.update()
         
     
@@ -190,7 +208,6 @@ class LoteView(ft.Container):
             'id_mina': self.insert_mina.value if self.insert_mina.value else None,
             'no_contrato': self.insert_contrato.value if self.insert_contrato.value else None,
             'booking': self.insert_booking.value if self.insert_booking.value else None
-            # 'estado': self.estado_lote.value
         }
 
         try:
