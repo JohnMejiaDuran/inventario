@@ -13,7 +13,7 @@ class HomeView(ft.Container):
         self.data_table = ft.DataTable(
             width=float('inf'),
             columns=[
-                ft.DataColumn(ft.Text("")),
+                ft.DataColumn(ft.Text("#")),
                 ft.DataColumn(ft.Text("No. \n SERVICIO", text_align="center"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
                 ft.DataColumn(ft.Text("TIPO \n MOVIMIENTO", text_align="center"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
                 ft.DataColumn(ft.Text("PRODUCTO"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
@@ -29,8 +29,7 @@ class HomeView(ft.Container):
             vertical_lines=ft.BorderSide(width=1, color=ft.colors.GREY_300),
             horizontal_lines=ft.BorderSide(width=1, color=ft.colors.GREY_300)
         )
-        
-        self.nuevo_servicio = ft.TextButton(text="Nuevo servicio")
+    
         self.content = ft.Column([
             ft.Row([
                 ft.Container(
@@ -44,10 +43,6 @@ class HomeView(ft.Container):
                 ),
                 
             ]),
-            ft.Row([
-                self.nuevo_servicio
-            ])
-            ,
             ft.Column([
                 self.data_table
             ])

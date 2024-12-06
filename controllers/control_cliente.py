@@ -107,5 +107,5 @@ class ControlCliente:
         return session.query(Cliente).get(cliente_id)
     
     def obtener_prefijo_cliente(self, cliente_id):
-        cliente = session.query(Cliente).get(int(cliente_id))
+        cliente = session.query(Cliente).get(cliente_id)
         return cliente.prefijo_cliente if cliente else None
