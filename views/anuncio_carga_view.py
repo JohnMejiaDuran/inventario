@@ -24,17 +24,24 @@ class AnuncioCargaView(ft.Container):
         self.go_home = create_home_button(page, lambda _: page.go("/"))
         
         self.data_table = ft.DataTable(
-            width=float('inf'),
+            
             columns=[
-                ft.DataColumn(ft.Text("#")),
-                ft.DataColumn(ft.Text("No. Servicio"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
-                ft.DataColumn(ft.Text("Mina"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
-                ft.DataColumn(ft.Text("Transportador"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
-                ft.DataColumn(ft.Text("Producto", ), heading_row_alignment=ft.MainAxisAlignment.CENTER),
-                ft.DataColumn(ft.Text("Tipo Producto"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
-                ft.DataColumn(ft.Text("Tipo unidad"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
-                ft.DataColumn(ft.Text("Unidades \n anunciadas", text_align="center"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
-                ft.DataColumn(ft.Text("Peso \n anunciado", text_align="center"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
+                ft.DataColumn(ft.Text("#", text_align="center")),
+                ft.DataColumn(ft.Text("PLACA", text_align="center"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
+                ft.DataColumn(ft.Text("PLACA\nREMOLQUE", text_align="center"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
+                ft.DataColumn(ft.Text("NOMBRE\nCONDUCTOR",text_align="center"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
+                ft.DataColumn(ft.Text("NÚMERO DE\nCÉDULA",text_align="center" ), heading_row_alignment=ft.MainAxisAlignment.CENTER),
+                ft.DataColumn(ft.Text("NÚMERO DE\nCONTACTO", text_align="center"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
+                ft.DataColumn(ft.Text("EMPRESA\nTRANSPORTADORA", text_align="center"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
+                ft.DataColumn(ft.Text("NIT", text_align="center"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
+                ft.DataColumn(ft.Text("TIPO DE\nVEHÍCULO", text_align="center"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
+                ft.DataColumn(ft.Text("CLIENTE /\n CONSIGNATARIO", text_align="center"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
+                ft.DataColumn(ft.Text("BL", text_align="center"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
+                ft.DataColumn(ft.Text("PRODUCTO/REFERENCIA \n /VPEDIDO O NÚMERO DE \n CONTENEDOR", text_align="center"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
+                ft.DataColumn(ft.Text("SELLOS", text_align="center"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
+                ft.DataColumn(ft.Text("BULTOS", text_align="center"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
+                ft.DataColumn(ft.Text("PESO KGS", text_align="center"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
+                ft.DataColumn(ft.Text("FECHA DE \n PROGRAMACIÓN DE \n CARGA/DESCARGUE", text_align="center"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
             ],
             rows=[],
             vertical_lines=ft.BorderSide(width=1, color=ft.Colors.GREY_300),
@@ -44,10 +51,21 @@ class AnuncioCargaView(ft.Container):
             controls=[
                 self.go_home,
                 ft.Text("Cargas Anunciadas", size=20, weight=ft.FontWeight.BOLD),
-                ft.Column([
-                    self.data_table
-                ])
+                ft.Column(
+                    controls=[
+                        ft.Row([
+                            self.data_table
+                        ],
+                               scroll=ft.ScrollMode.ALWAYS),
+                    ],
+                    alignment=ft.MainAxisAlignment.START,
+                    horizontal_alignment=ft.CrossAxisAlignment.STRETCH,
+                    spacing=20,
+                    scroll=ft.ScrollMode.ALWAYS
+                ),
+                
             ],
+            
         )
     def ir_atras(self, _):
         self.page.go("/datos")
