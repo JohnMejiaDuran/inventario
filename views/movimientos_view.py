@@ -6,6 +6,7 @@ from controllers.control_transportadores import ControlTransportador
 from controllers.control_productos import ControlProducto
 from controllers.control_tipo_producto import  ControlTipoProducto
 from controllers.control_bodegas import ControlBodega
+from controllers.control_tipo_unidad import ControlTipoUnidad
 import datetime
 from controllers.control_movimiento import ControlMovimientos
 
@@ -21,6 +22,7 @@ class MovimientoView(ft.Container):
         self.controlador_tipo_producto = ControlTipoProducto()
         self.controlador_bodegas = ControlBodega()
         self.controlador_movimientos = ControlMovimientos()
+        self.controlador_tipo_unidad = ControlTipoUnidad()
         self.nombre_movimiento = ft.Text("Nuevo Movimiento")
         self.insert_cliente = ft.Dropdown(
             label="Selecciona un cliente",
@@ -87,12 +89,9 @@ class MovimientoView(ft.Container):
         self.insert_tipo_unidad = ft.Dropdown(
             label="Seleccione tipo de unidad",
             options=[
-                ft.dropdown.Option("BIG BAG"),
-                ft.dropdown.Option("CARGA GENERAL"),
-                ft.dropdown.Option("CONTENEDORES"),
-                ft.dropdown.Option("ISOTANQUES"),
-                ft.dropdown.Option("PALLET"),
-                
+                ft.dropdown.Option(key=tipo_unidad.nombre_tipo_unidad, text=tipo_unidad.nombre_tipo_unidad)
+                for tipo_unidad in self.controlador_tipo_unidad.obtener_tipo_unidades()
+                if tipo_unidad.estado_tipo_unidad
             ],
             expand=True
         )
@@ -178,11 +177,11 @@ class MovimientoView(ft.Container):
             expand=True)
         
         self.hora_button = ft.IconButton(
-            icon=ft.icons.ACCESS_TIME,
+            icon=ft.Icons.ACCESS_TIME,
             on_click=lambda _: self.insert_hora.pick_time()
         )
         self.hora_fin_button = ft.IconButton(
-            icon=ft.icons.ACCESS_TIME,
+            icon=ft.Icons.ACCESS_TIME,
             on_click=lambda _: self.insert_hora_fin.pick_time()
         )
         self.stack_hora = ft.Stack([
@@ -203,7 +202,7 @@ class MovimientoView(ft.Container):
             )
         ], expand=True)
         self.fecha_button = ft.IconButton(
-            icon=ft.icons.EVENT,
+            icon=ft.Icons.EVENT,
             on_click=lambda _: self.insert_fecha.pick_date()
         )
         self.stack_fecha = ft.Stack([
@@ -264,7 +263,7 @@ class MovimientoView(ft.Container):
         self.data_table = ft.DataTable(
             columns=[
                 ft.DataColumn(ft.Text("#")),
-                ft.DataColumn(ft.Text("No. \n SERVICIO",text_align="center"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
+                ft.DataColumn(ft.Text("No. SERVICIO",text_align="center"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
                 ft.DataColumn(ft.Text("TIPO \n MOVIMIENTO", text_align="center"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
                 ft.DataColumn(ft.Text("CATEGORÍA", text_align="center"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
                 ft.DataColumn(ft.Text("UBICACIÓN", text_align="center"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
@@ -277,9 +276,8 @@ class MovimientoView(ft.Container):
                 
             ],
             rows=[],
-            vertical_lines=ft.BorderSide(width=1, color=ft.colors.GREY_300),
-            horizontal_lines=ft.BorderSide(width=1, color=ft.colors.GREY_300),
-            data_row_max_height=80,
+            vertical_lines=ft.BorderSide(width=1, color=ft.Colors.GREY_300),
+            horizontal_lines=ft.BorderSide(width=1, color=ft.Colors.GREY_300),
             column_spacing=20
             
         )

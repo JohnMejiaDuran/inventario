@@ -11,6 +11,8 @@ from database.models.movimientos import Movimiento
 from database.models.bodegas import Bodega
 from database.models.viajes import Viaje
 from database.models.barcazas import Barcaza
+from database.models.tipo_unidades import TipoUnidad
+# Create a file named .flaskenv in your project root:
 
 def main(page: ft.Page):
     page.title = "Inventario"

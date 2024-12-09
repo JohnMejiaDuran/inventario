@@ -92,6 +92,32 @@ class Datos(ft.Container):
                         bgcolor="white"
                     ),
                 ],
+                
+                    alignment=ft.MainAxisAlignment.CENTER,
+                ),
+                ft.Row([
+                    ft.Container(
+                        content=ft.TextButton("TIPO DE VEHICULOS", on_click=lambda _:self.page.go("/")),
+                        width=200,
+                        height=200,
+                        border_radius=20,
+                        bgcolor="white"
+                    ),
+                    ft.Container(
+                        content=ft.TextButton("TIPO DE UNIDADES", on_click=lambda _:self.page.go("/tipo_unidades")),
+                        width=200,
+                        height=200,
+                        border_radius=20,
+                        bgcolor="white"
+                    ),
+                    ft.Container(
+                        content=ft.TextButton("IMO'S", on_click=lambda _:self.page.go("/")),
+                        width=200,
+                        height=200,
+                        border_radius=20,
+                        bgcolor="white"
+                    ),
+                ],
                     alignment=ft.MainAxisAlignment.CENTER,
                 ),
             ])

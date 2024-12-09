@@ -26,8 +26,8 @@ class HomeView(ft.Container):
                 ft.DataColumn(ft.Text("BARCAZA"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
             ]
             ,rows=[],
-            vertical_lines=ft.BorderSide(width=1, color=ft.colors.GREY_300),
-            horizontal_lines=ft.BorderSide(width=1, color=ft.colors.GREY_300)
+            vertical_lines=ft.BorderSide(width=1, color=ft.Colors.GREY_300),
+            horizontal_lines=ft.BorderSide(width=1, color=ft.Colors.GREY_300)
         )
     
         self.content = ft.Column([

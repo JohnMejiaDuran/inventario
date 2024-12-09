@@ -12,6 +12,7 @@ from views.barcazas_view import BarcazaView
 from views.bodegas_view import BodegaView
 from views.viajes_view import ViajeView
 from views.movimientos_view import MovimientoView
+from views.tipo_unidad_view import UnidadesView
 
 def init_router(page: ft.Page):
     def route_change(_):
@@ -132,6 +133,15 @@ def init_router(page: ft.Page):
                     "/movimientos",
                     [
                         MovimientoView(page)
+                    ]
+                )
+            )
+        elif page.route == "/tipo_unidades":
+            page.views.append(
+                ft.View(
+                    "/tipo_unidades",
+                    [
+                        UnidadesView(page)
                     ]
                 )
             )

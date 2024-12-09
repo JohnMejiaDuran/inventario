@@ -177,8 +177,8 @@ class ClientesView(ft.Container):
         # Populate table with client data
         for cliente in clientes:
             estado_text = "ACTIVO" if cliente.estado else "INACTIVO"
-            estado_text_color = None if cliente.estado else ft.colors.WHITE
-            estado_bgcolor = None if cliente.estado else ft.colors.RED_400
+            estado_text_color = None if cliente.estado else ft.Colors.WHITE
+            estado_bgcolor = None if cliente.estado else ft.Colors.RED_400
             edit_button = ft.TextButton(
                     text="Editar",
                     on_click=lambda e, c=cliente: self.abrir_modal_editar(e, c),
