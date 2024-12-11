@@ -66,8 +66,8 @@ class LoteView(ft.Container):
                 ft.DataColumn(ft.Text("Acciones"), heading_row_alignment=ft.MainAxisAlignment.CENTER)
             ],
             rows=[],
-            vertical_lines=ft.BorderSide(width=1, color=ft.colors.GREY_300),
-            horizontal_lines=ft.BorderSide(width=1, color=ft.colors.GREY_300),
+            vertical_lines=ft.BorderSide(width=1, color=ft.Colors.GREY_300),
+            horizontal_lines=ft.BorderSide(width=1, color=ft.Colors.GREY_300),
             
         )
         
@@ -158,7 +158,7 @@ class LoteView(ft.Container):
         """Muestra un mensaje utilizando el método de overlay de Flet."""
         snack_bar = ft.SnackBar(
             content=ft.Text(mensaje),
-            bgcolor=ft.colors.RED if es_error else ft.colors.GREEN
+            bgcolor=ft.Colors.RED if es_error else ft.Colors.GREEN
         )
         self.page.overlay.append(snack_bar)
         snack_bar.open = True
