@@ -33,51 +33,53 @@ class AnuncioCargaView(ft.Container):
 
             columns=[
                 ft.DataColumn(ft.Text("#", text_align="center")),
-                ft.DataColumn(ft.Text("PLACA", text_align="center"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
-                ft.DataColumn(ft.Text("PLACA DE\nREMOLQUE", text_align="center"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
-                ft.DataColumn(ft.Text("NOMBRE DE\nCONDUCTOR",text_align="center"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
-                ft.DataColumn(ft.Text("NÚMERO DE\nCÉDULA",text_align="center" ), heading_row_alignment=ft.MainAxisAlignment.CENTER),
-                ft.DataColumn(ft.Text("NÚMERO DE\nCONTACTO", text_align="center"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
-                ft.DataColumn(ft.Text("EMPRESA\nTRANSPORTADORA", text_align="center"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
-                ft.DataColumn(ft.Text("NIT", text_align="center"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
-                ft.DataColumn(ft.Text("TIPO DE\nVEHÍCULO", text_align="center"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
-                ft.DataColumn(ft.Text("CLIENTE/\nCONSIGNATARIO", text_align="center"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
-                ft.DataColumn(ft.Text("BL", text_align="center"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
-                ft.DataColumn(ft.Text("PRODUCTO/REFERENCIA/PEDIDO\nO NÚMERO DE CONTENEDOR", text_align="center"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
-                ft.DataColumn(ft.Text("SELLOS", text_align="center"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
-                ft.DataColumn(ft.Text("BULTOS", text_align="center"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
-                ft.DataColumn(ft.Text("PESO KGS", text_align="center"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
-                ft.DataColumn(ft.Text("FECHA DE PROGRAMACIÓN DE\n CARGA / DESCARGUE", text_align="center"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
+                ft.DataColumn(ft.Text("FECHA", text_align="center"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
+                ft.DataColumn(ft.Text("CABEZOTE", text_align="center"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
+                ft.DataColumn(ft.Text("EMPRESA DE TRANSPORTE", text_align="center"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
+                ft.DataColumn(ft.Text("NIT:",text_align="center"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
+                ft.DataColumn(ft.Text("REMOLQUE:",text_align="center" ), heading_row_alignment=ft.MainAxisAlignment.CENTER),
+                ft.DataColumn(ft.Text("TIPO", text_align="center"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
+                ft.DataColumn(ft.Text("NOMBRE DEL CONDUCTOR ", text_align="center"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
+                ft.DataColumn(ft.Text("NUMERO CEDULA DE CIUDADANÍA:", text_align="center"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
+                ft.DataColumn(ft.Text("DOCUMENTO O GUÍA TRANSPORTE", text_align="center"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
+                ft.DataColumn(ft.Text("PRODUCTO", text_align="center"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
+                ft.DataColumn(ft.Text("CANTIDAD A CARGAR (GLS)", text_align="center"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
+                ft.DataColumn(ft.Text("ORIGEN / DESTINO", text_align="center"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
+                ft.DataColumn(ft.Text("ENTURNADOR", text_align="center"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
+                ft.DataColumn(ft.Text("CANT", text_align="center"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
+                ft.DataColumn(ft.Text("ORDEN DE SERVICIO", text_align="center"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
+                ft.DataColumn(ft.Text("INGRESO:", text_align="center"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
+                ft.DataColumn(ft.Text("RETIRO:", text_align="center"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
+                ft.DataColumn(ft.Text("NAL", text_align="center"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
+                ft.DataColumn(ft.Text("CONTROL ADUANERO:", text_align="center"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
+                ft.DataColumn(ft.Text("CLIENTE:", text_align="center"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
+                ft.DataColumn(ft.Text("NIT:", text_align="center"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
+                ft.DataColumn(ft.Text("EMPRESA AUTORIZADA (SIA):", text_align="center"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
+                ft.DataColumn(ft.Text("NIT:", text_align="center"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
+                ft.DataColumn(ft.Text("NOMBRE BARCAZA:", text_align="center"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
+                ft.DataColumn(ft.Text("NOMBRE DEL REMOLCADOR:", text_align="center"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
+                ft.DataColumn(ft.Text("NUMERO DE VIAJE:", text_align="center"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
+                ft.DataColumn(ft.Text("FECHA DE LLEGADA:", text_align="center"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
+                ft.DataColumn(ft.Text("MANIFIESTO:", text_align="center"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
+                ft.DataColumn(ft.Text("FECHA:", text_align="center"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
+                ft.DataColumn(ft.Text("DEC. DE IMPORTACIÓN:", text_align="center"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
+                ft.DataColumn(ft.Text("FECHA:", text_align="center"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
+                ft.DataColumn(ft.Text("LEVANTE:", text_align="center"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
+                ft.DataColumn(ft.Text("FECHA:", text_align="center"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
+                ft.DataColumn(ft.Text("NUMERO CONTENEDOR", text_align="center"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
+                ft.DataColumn(ft.Text("LONGITUD", text_align="center"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
+                ft.DataColumn(ft.Text("TIPO", text_align="center"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
+                ft.DataColumn(ft.Text("TARA", text_align="center"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
+                ft.DataColumn(ft.Text("PESO DECLARADO KG", text_align="center"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
+                ft.DataColumn(ft.Text("CANTIDAD A CARGAR (UN)", text_align="center"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
+                ft.DataColumn(ft.Text("IMO", text_align="center"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
+                ft.DataColumn(ft.Text("PRECINTOS DE SEGURIDAD", text_align="center"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
+                ft.DataColumn(ft.Text("OBSERVACIONES:", text_align="center"), heading_row_alignment=ft.MainAxisAlignment.CENTER)
             ],
             rows=[],
             vertical_lines=ft.BorderSide(width=1, color=ft.Colors.GREY_300),
             horizontal_lines=ft.BorderSide(width=1, color=ft.Colors.GREY_300),
 
-        )
-        
-        self.data_table_modal = ft.DataTable(
-            columns=[
-                ft.DataColumn(ft.Text("", text_align="center"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
-                ft.DataColumn(ft.Text("INGRESO/RETIRO", text_align="center"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
-                ft.DataColumn(ft.Text("PLACA", text_align="center"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
-                ft.DataColumn(ft.Text("PLACA\nREMOLQUE", text_align="center"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
-                ft.DataColumn(ft.Text("NOMBRE DE\nCONDUCTOR", text_align="center"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
-                ft.DataColumn(ft.Text("NÚMERO\nDE CÉDULA", text_align="center"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
-                ft.DataColumn(ft.Text("NÚMERO\nDE CONTACTO", text_align="center"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
-                ft.DataColumn(ft.Text("EMPRESA\nTRANSPORTADORA", text_align="center"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
-                ft.DataColumn(ft.Text("NIT", text_align="center"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
-                ft.DataColumn(ft.Text("TIPO DE\nVEHÍCULO", text_align="center"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
-                ft.DataColumn(ft.Text("CLIENTE/\nCONSIGNATARIO", text_align="center"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
-                ft.DataColumn(ft.Text("BL", text_align="center"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
-                ft.DataColumn(ft.Text("PRODUCTO/REFERENCIA/PEDIDO\nO NÚMERO DE CONTENEDOR", text_align="center"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
-                ft.DataColumn(ft.Text("SELLOS", text_align="center"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
-                ft.DataColumn(ft.Text("BULTOS", text_align="center"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
-                ft.DataColumn(ft.Text("PESO KGS", text_align="center"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
-                ft.DataColumn(ft.Text("FECHA DE PROGRAMACIÓN DE\nCARGA/DESCARGUE", text_align="center"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
-            ],
-            rows=[],
-            vertical_lines=ft.BorderSide(width=1, color=ft.Colors.GREY_300),
-            horizontal_lines=ft.BorderSide(width=1, color=ft.Colors.GREY_300),
         )
         
         
@@ -111,7 +113,7 @@ class AnuncioCargaView(ft.Container):
         self.page.overlay.append(self.file_picker)
         self.page.update()
 
-        # Create the modal dialog
+        # Create the modal dialog without a predefined data table
         self.modal = ft.AlertDialog(
             title=ft.Text("Anunciar cargas", size=20, weight=ft.FontWeight.BOLD),
             content=ft.Column(
@@ -124,18 +126,10 @@ class AnuncioCargaView(ft.Container):
                             dialog_title="Seleccionar archivo Excel"
                         )
                     ),
+                    # Placeholder for dynamically created data table
                     ft.Container(
-
-                        content= ft.Column(
-                        controls=[
-                            ft.Row(
-                                [
-                                    self.data_table_modal
-                                ],
-                                scroll=ft.ScrollMode.ALWAYS
-                            )
-                        ],
-                    ),
+                        content=ft.Text("No se ha cargado ningún archivo"),
+                        padding=20
                     )
                 ],
                 height=1000,
@@ -159,7 +153,7 @@ class AnuncioCargaView(ft.Container):
         
     def upload_excel(self, e: ft.FilePickerResultEvent):
         """
-        Upload an Excel file and populate both the modal's and main data tables
+        Upload an Excel file and create a dynamic data table in the modal
         
         :param e: Flet FilePickerResultEvent containing the uploaded file
         """
@@ -170,53 +164,10 @@ class AnuncioCargaView(ft.Container):
         try:
             # Read the Excel file starting from row 5 (index 4) to get headers
             df = pd.read_excel(e.files[0].path, header=3)
-            print("Original columns:", list(df.columns))
-            
-            # Define a mapping of desired display columns to potential Excel headers
-            column_mapping = {
-                'PLACA': ['PLACA', 'Placa', 'placa'],
-                'PLACA DE REMOLQUE': ['PLACA DE REMOLQUE', 'Placa de Remolque', 'placa de remolque'],
-                'NOMBRE DE CONDUCTOR': ['NOMBRE DE CONDUCTOR', 'Nombre de Conductor', 'nombre de conductor'],
-                'NÚMERO DE CÉDULA': ['NÚMERO DE CÉDULA', 'Número de Cédula', 'número de cédula'],
-                'NÚMERO DE CONTACTO': ['NÚMERO DE CONTACTO', 'Número de Contacto', 'número de contacto'],
-                'EMPRESA TRANSPORTADORA': ['EMPRESA TRANSPORTADORA', 'Empresa Transportadora', 'empresa transportadora'],
-                'NIT': ['NIT', 'Nit', 'nit'],
-                'TIPO DE VEHÍCULO': ['TIPO DE VEHÍCULO', 'Tipo de Vehículo', 'tipo de vehículo'],
-                'CLIENTE/CONSIGNATARIO': ['CLIENTE/CONSIGNATARIO', 'Cliente/Consignatario', 'cliente/consignatario'],
-                'BL': ['BL', 'Bl', 'bl'],
-                'PRODUCTO/REFERENCIA /PEDIDO O NUMERO DE CONTENEDOR': [
-                    'PRODUCTO/REFERENCIA /PEDIDO O NUMERO DE CONTENEDOR', 
-                    'Producto/Referencia/ Pedido o Numero de Contenedor',
-                    'producto/referencia/ pedido o numero de contenedor'
-                ],
-                'SELLOS': ['SELLOS', 'Sellos', 'sellos'],
-                'BULTOS': ['BULTOS', 'Bultos', 'bultos'],
-                'PESO KGS': ['PESO KGS', 'Peso Kgs', 'peso kgs'],
-                'FECHA DE PROGRAMACIÓN DE CARGUE / DESCARGUE': [
-                    'FECHA DE PROGRAMACIÓN DE CARGUE / DESCARGUE', 
-                    'Fecha de Programación de cargue / Descargue',
-                    'fecha de programación de cargue / descargue'
-                ]
-            }
-            
-            # Find the actual column names in the Excel file
-            display_columns = {}
-            for display_col, possible_headers in column_mapping.items():
-                # Find the first matching header
-                matching_header = next((col for col in df.columns if col in possible_headers), None)
-                
-                if matching_header:
-                    display_columns[display_col] = matching_header
-                else:
-                    print(f"Warning: No match found for {display_col}")
-                    display_columns[display_col] = ''
             
             # Ensure all columns are strings and handle NaN values
             df = df.fillna('')
             df = df.astype(str)
-            
-            # Clear existing rows in both tables
-            self.data_table_modal.rows.clear()
             
             def format_date(date_value):
                 try:
@@ -228,58 +179,65 @@ class AnuncioCargaView(ft.Container):
                 except Exception:
                     return str(date_value)
 
-            # Populate both the modal and main data tables
+            # Dynamically create column list from the DataFrame
+            display_columns = list(df.columns)
+
+            # Dynamically create the data table for the modal
+            data_table_modal = ft.DataTable(
+                columns=[
+                    ft.DataColumn(ft.Text("Índice", text_align="center"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
+                    ft.DataColumn(ft.Text("INGRESO/RETIRO", text_align="center"), heading_row_alignment=ft.MainAxisAlignment.CENTER)
+                ] + [
+                    ft.DataColumn(
+                        ft.Text(col, text_align="center"), 
+                        heading_row_alignment=ft.MainAxisAlignment.CENTER
+                    ) for col in display_columns
+                ],
+                rows=[],
+                vertical_lines=ft.BorderSide(width=1, color=ft.Colors.GREY_300),
+                horizontal_lines=ft.BorderSide(width=1, color=ft.Colors.GREY_300)
+            )
+
+            # Populate the dynamic data table
             for index, row in df.iterrows():
-                
+                # Checkbox for ingreso/retiro
                 ingreso_checkbox = ft.Checkbox(
                     label="INGRESO",
                     value=True,
                     on_change=lambda e, checkbox=None: self.toggle_ingreso_type(e, checkbox)
                 )
-                # Create a row for the modal DataTable
-                modal_row = ft.DataRow(
-                    cells=[
-                        ft.DataCell(ft.Text(str(index + 1), text_align=ft.TextAlign.CENTER)),
-                        ft.DataCell(ingreso_checkbox)
-                    ]+[
-                        ft.DataCell(ft.Text(
-                            format_date(row.get(display_columns.get(col, ''), '')) if col == 'FECHA DE PROGRAMACIÓN DE CARGUE / DESCARGUE' else row.get(display_columns.get(col, ''), ''),
-                            text_align=ft.TextAlign.CENTER
-                        )) 
-                        for col in column_mapping.keys()
-                    ]
-                )
-                self.data_table_modal.rows.append(modal_row)
-                
-                
-                # Create a row for the main DataTable with an index column
-                main_row = ft.DataRow(
-                    cells=[
-                        ft.DataCell(ft.Text(str(index + 1), text_align=ft.TextAlign.CENTER)),  # Index column
-                    ] + [
-                        ft.DataCell(ft.Text(
-                            row.get(display_columns.get(col, ''), '',), 
-                            text_align=ft.TextAlign.CENTER
-                        )) 
-                        for col in column_mapping.keys()
-                    ]
-                )
-                
-                ingreso_checkbox.data = {
-                    'row': modal_row,
-                    'main_row': main_row
-                }
 
+                # Create a row for the modal DataTable
+                row_cells = [
+                    ft.DataCell(ft.Text(str(index + 1), text_align=ft.TextAlign.CENTER)),
+                    ft.DataCell(ingreso_checkbox)
+                ] + [
+                    ft.DataCell(ft.Text(
+                        format_date(row[col]) if 'fecha' in col.lower() else row[col], 
+                        text_align=ft.TextAlign.CENTER
+                    )) 
+                    for col in display_columns
+                ]
+
+                modal_row = ft.DataRow(cells=row_cells)
+                data_table_modal.rows.append(modal_row)
+                
+                # Link the checkbox to the row
+                ingreso_checkbox.data = {'row': modal_row}
+
+            # Update the modal content with the dynamically created table
+            self.modal.content.controls[1] = ft.Container(
+                content=ft.Column(
+                    controls=[
+                        ft.Row(
+                            [data_table_modal],
+                            scroll=ft.ScrollMode.ALWAYS
+                        )
+                    ]
+                )
+            )
             
             # Force the modal to update and show the data
-            self.modal.content.controls[1].content = ft.Column(
-                controls=[
-                    ft.Row(
-                        [self.data_table_modal],
-                        scroll=ft.ScrollMode.ALWAYS
-                    )
-                ]
-            )
             self.page.dialog.open = True
             self.page.update()
         
