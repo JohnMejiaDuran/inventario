@@ -30,7 +30,7 @@ class AnuncioCargaView(ft.Container):
         )
         
         self.data_table = ft.DataTable(
-            
+
             columns=[
                 ft.DataColumn(ft.Text("#", text_align="center")),
                 ft.DataColumn(ft.Text("PLACA", text_align="center"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
@@ -43,21 +43,22 @@ class AnuncioCargaView(ft.Container):
                 ft.DataColumn(ft.Text("TIPO DE\nVEHÍCULO", text_align="center"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
                 ft.DataColumn(ft.Text("CLIENTE/\nCONSIGNATARIO", text_align="center"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
                 ft.DataColumn(ft.Text("BL", text_align="center"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
-                ft.DataColumn(ft.Text("PRODUCTO/REFERENCIA \n /PEDIDO O NÚMERO DE \n CONTENEDOR", text_align="center"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
+                ft.DataColumn(ft.Text("PRODUCTO/REFERENCIA/PEDIDO\nO NÚMERO DE CONTENEDOR", text_align="center"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
                 ft.DataColumn(ft.Text("SELLOS", text_align="center"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
                 ft.DataColumn(ft.Text("BULTOS", text_align="center"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
                 ft.DataColumn(ft.Text("PESO KGS", text_align="center"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
-                ft.DataColumn(ft.Text("FECHA DE\nPROGRAMACIÓN DE\n CARGA / DESCARGUE", text_align="center"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
+                ft.DataColumn(ft.Text("FECHA DE PROGRAMACIÓN DE\n CARGA / DESCARGUE", text_align="center"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
             ],
             rows=[],
             vertical_lines=ft.BorderSide(width=1, color=ft.Colors.GREY_300),
             horizontal_lines=ft.BorderSide(width=1, color=ft.Colors.GREY_300),
+
         )
         
         self.data_table_modal = ft.DataTable(
             columns=[
                 ft.DataColumn(ft.Text("", text_align="center"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
-                ft.DataColumn(ft.Text("INGRESO", text_align="center"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
+                ft.DataColumn(ft.Text("INGRESO/RETIRO", text_align="center"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
                 ft.DataColumn(ft.Text("PLACA", text_align="center"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
                 ft.DataColumn(ft.Text("PLACA\nREMOLQUE", text_align="center"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
                 ft.DataColumn(ft.Text("NOMBRE DE\nCONDUCTOR", text_align="center"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
@@ -68,11 +69,11 @@ class AnuncioCargaView(ft.Container):
                 ft.DataColumn(ft.Text("TIPO DE\nVEHÍCULO", text_align="center"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
                 ft.DataColumn(ft.Text("CLIENTE/\nCONSIGNATARIO", text_align="center"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
                 ft.DataColumn(ft.Text("BL", text_align="center"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
-                ft.DataColumn(ft.Text("PRODUCTO/REFERENCIA\n/PEDIDO O NÚMERO\nDE CONTENEDOR", text_align="center"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
+                ft.DataColumn(ft.Text("PRODUCTO/REFERENCIA/PEDIDO\nO NÚMERO DE CONTENEDOR", text_align="center"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
                 ft.DataColumn(ft.Text("SELLOS", text_align="center"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
                 ft.DataColumn(ft.Text("BULTOS", text_align="center"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
                 ft.DataColumn(ft.Text("PESO KGS", text_align="center"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
-                ft.DataColumn(ft.Text("FECHA DE\nPROGRAMACIÓN DE\nCARGA/DESCARGUE", text_align="center"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
+                ft.DataColumn(ft.Text("FECHA DE PROGRAMACIÓN DE\nCARGA/DESCARGUE", text_align="center"), heading_row_alignment=ft.MainAxisAlignment.CENTER),
             ],
             rows=[],
             vertical_lines=ft.BorderSide(width=1, color=ft.Colors.GREY_300),
@@ -90,12 +91,12 @@ class AnuncioCargaView(ft.Container):
                         ft.Row([
                             self.data_table
                         ],
-                               scroll=ft.ScrollMode.ALWAYS),
+                               scroll=ft.ScrollMode.ADAPTIVE),
                     ],
                     alignment=ft.MainAxisAlignment.START,
                     horizontal_alignment=ft.CrossAxisAlignment.STRETCH,
                     spacing=20,
-                    scroll=ft.ScrollMode.ALWAYS
+                    scroll=ft.ScrollMode.ADAPTIVE
                 ),
                 
             ],
@@ -123,7 +124,9 @@ class AnuncioCargaView(ft.Container):
                             dialog_title="Seleccionar archivo Excel"
                         )
                     ),
-                    ft.Column(
+                    ft.Container(
+
+                        content= ft.Column(
                         controls=[
                             ft.Row(
                                 [
@@ -132,12 +135,12 @@ class AnuncioCargaView(ft.Container):
                                 scroll=ft.ScrollMode.ALWAYS
                             )
                         ],
-                        height=400,
+                    ),
                     )
                 ],
                 height=1000,
                 width=1200,
-                scroll=ft.ScrollMode.AUTO
+                scroll=ft.ScrollMode.ALWAYS
             ),
             actions=[
                 ft.TextButton("Cancelar", on_click=self.cerrar_modal),
@@ -215,16 +218,32 @@ class AnuncioCargaView(ft.Container):
             # Clear existing rows in both tables
             self.data_table_modal.rows.clear()
             
+            def format_date(date_value):
+                try:
+                    # Convert to datetime if it's not already
+                    if pd.notna(date_value):
+                        # Convert to datetime and format as dd/mm/yyyy
+                        return pd.to_datetime(date_value).strftime('%d/%m/%Y')
+                    return ''
+                except Exception:
+                    return str(date_value)
+
             # Populate both the modal and main data tables
             for index, row in df.iterrows():
+                
+                ingreso_checkbox = ft.Checkbox(
+                    label="INGRESO",
+                    value=True,
+                    on_change=lambda e, checkbox=None: self.toggle_ingreso_type(e, checkbox)
+                )
                 # Create a row for the modal DataTable
                 modal_row = ft.DataRow(
                     cells=[
                         ft.DataCell(ft.Text(str(index + 1), text_align=ft.TextAlign.CENTER)),
-                        ft.DataCell(ft.Checkbox(value=True))]+
-                    [
+                        ft.DataCell(ingreso_checkbox)
+                    ]+[
                         ft.DataCell(ft.Text(
-                            row.get(display_columns.get(col, ''), ''),
+                            format_date(row.get(display_columns.get(col, ''), '')) if col == 'FECHA DE PROGRAMACIÓN DE CARGUE / DESCARGUE' else row.get(display_columns.get(col, ''), ''),
                             text_align=ft.TextAlign.CENTER
                         )) 
                         for col in column_mapping.keys()
@@ -232,22 +251,35 @@ class AnuncioCargaView(ft.Container):
                 )
                 self.data_table_modal.rows.append(modal_row)
                 
+                
                 # Create a row for the main DataTable with an index column
                 main_row = ft.DataRow(
                     cells=[
                         ft.DataCell(ft.Text(str(index + 1), text_align=ft.TextAlign.CENTER)),  # Index column
                     ] + [
                         ft.DataCell(ft.Text(
-                            row.get(display_columns.get(col, ''), ''), 
+                            row.get(display_columns.get(col, ''), '',), 
                             text_align=ft.TextAlign.CENTER
                         )) 
                         for col in column_mapping.keys()
                     ]
                 )
+                
+                ingreso_checkbox.data = {
+                    'row': modal_row,
+                    'main_row': main_row
+                }
 
             
             # Force the modal to update and show the data
-            self.page.dialog.content.controls[1].controls[0].content = self.data_table_modal
+            self.modal.content.controls[1].content = ft.Column(
+                controls=[
+                    ft.Row(
+                        [self.data_table_modal],
+                        scroll=ft.ScrollMode.ALWAYS
+                    )
+                ]
+            )
             self.page.dialog.open = True
             self.page.update()
         
@@ -262,3 +294,23 @@ class AnuncioCargaView(ft.Container):
             self.page.dialog = error_dialog
             error_dialog.open = True
             self.page.update()
+        
+    
+    def toggle_ingreso_type(self, e, checkbox=None):
+        """
+        Toggle between INGRESO and RETIRO when checkbox is checked/unchecked
+        
+        :param e: Flet event
+        :param checkbox: Optional checkbox to toggle (used if not passed via event)
+        """
+        # Use the event's control if no checkbox is provided
+        target_checkbox = checkbox or e.control
+        
+        # Update checkbox label based on state
+        if target_checkbox.value:
+            target_checkbox.label = "INGRESO"
+        else:
+            target_checkbox.label = "RETIRO"
+        
+        # Update the page to reflect changes
+        self.page.update()
