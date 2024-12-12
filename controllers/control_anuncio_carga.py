@@ -13,11 +13,14 @@ class ControlAnuncioCarga:
                 session.add(nuevo_anuncio_carga)
                 session.commit()
                 return nuevo_anuncio_carga
-    
-            except IntegrityError:
+
+            except IntegrityError as e:
                 session.rollback()
-                raise ValueError("Error de integridad al guardar el anuncio de carga")
-    
+                raise ValueError(f"Error de integridad al guardar el anuncio de carga: {str(e)}")
+            except Exception as e:
+                session.rollback()
+                raise ValueError(f"Error al guardar el anuncio de carga: {str(e)}")
+            
         def actualizar_anuncio_carga(self, id_anuncio_carga, datos):
             try:
                 anuncio_carga = session.query(AnuncioCarga).get(id_anuncio_carga)

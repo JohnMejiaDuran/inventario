@@ -8,7 +8,12 @@ from controllers.control_transportadores import ControlTransportador
 from controllers.control_productos import ControlProducto
 from controllers.control_tipo_producto import ControlTipoProducto
 import pandas as pd
-
+from datetime import datetime
+import random
+import string
+from sqlalchemy import exists
+from database.models.anuncio_carga import AnuncioCarga
+from database.db import session
 
 class AnuncioCargaView(ft.Container):
     def __init__(self, page):
@@ -22,7 +27,7 @@ class AnuncioCargaView(ft.Container):
         self.controlador_transportador = ControlTransportador()
         self.controlador_producto = ControlProducto()
         self.controlador_tipo_producto = ControlTipoProducto()
-
+        self.df = None
         self.go_home = create_home_button(page, lambda _: page.go("/"))
         self.cargar_excel = ft.IconButton(
             icon=ft.Icons.ADD_CIRCLE,
@@ -33,6 +38,7 @@ class AnuncioCargaView(ft.Container):
         self.data_table = ft.DataTable(
             columns=[
                 ft.DataColumn(ft.Text("#", text_align="center")),
+                ft.DataColumn(ft.Text("ID_CARGA", text_align="center")),
                 ft.DataColumn(
                     ft.Text("FECHA", text_align="center"),
                     heading_row_alignment=ft.MainAxisAlignment.CENTER,
@@ -222,6 +228,16 @@ class AnuncioCargaView(ft.Container):
                 ),
             ],
         )
+        
+    @staticmethod
+    def generate_anuncio_carga_id():
+        # Two random uppercase letters
+        letters = ''.join(random.choices(string.ascii_uppercase, k=3))
+        
+        # Five random non-repeating digits
+        digits = ''.join(random.sample(string.digits, 5))
+        
+        return letters + digits
 
     def ir_atras(self, _):
         self.page.go("/datos")
@@ -253,7 +269,7 @@ class AnuncioCargaView(ft.Container):
             ),
             actions=[
                 ft.TextButton("Cancelar", on_click=self.cerrar_modal),
-                ft.ElevatedButton("ANUNCIAR"),
+                ft.ElevatedButton("ANUNCIAR", on_click=self.guardar_anuncio_carga),
             ],
             actions_alignment=ft.MainAxisAlignment.END,
         )
@@ -262,9 +278,90 @@ class AnuncioCargaView(ft.Container):
         self.modal.open = True
         self.page.update()
 
+    
+
+    def guardar_anuncio_carga(self, e):
+        try:
+            if not hasattr(self, 'df'):
+                raise ValueError("No se ha cargado un archivo Excel")
+
+            successful_records = []
+            failed_records = []
+
+            for _, row in self.df.iterrows():
+                try:
+                    # Convert date strings to datetime.date objects
+                    fecha_anuncio = pd.Timestamp.now().date() 
+                    fecha_programacion = pd.to_datetime(row.get('FECHA DE PROGRAMACIÓN DE CARGUE / DESCARGUE', pd.Timestamp.now())).date() if row.get('FECHA DE PROGRAMACIÓN DE CARGUE / DESCARGUE') else None
+
+                    datos_anuncio = {
+                        'id_anuncio_carga': self.generate_anuncio_carga_id(),
+                        'fecha_anuncio': fecha_anuncio,
+                        'cabezote': row.get('PLACA', ''),
+                        'remolque': row.get('PLACA DE REMOLQUE', ''),
+                        'nombre_conductor': row.get('NOMBRE DE CONDUCTOR', ''),
+                        'numero_cedula': row.get('NÚMERO DE CÉDULA', ''),
+                        'numero_contacto_conductor': row.get('NÚMERO DE CONTACTO', ''),
+                        'empresa_de_transporte': row.get('EMPRESA TRANSPORTADORA', ''),
+                        'nit_empresa': row.get('NIT', ''),
+                        'tipo_vehiculo': row.get('TIPO DE VEHÍCULO', ''),
+                        'cliente': row.get('CLIENTE/CONSIGNATARIO', ''),
+                        'observaciones': row.get('PRODUCTO/REFERENCIA /PEDIDO O NUMERO DE CONTENEDOR', ''),
+                        'precintos_de_seguridad': row.get('SELLOS', ''),
+                        'cantidad_a_cargar': float(row.get('BULTOS', 0)),
+                        'peso_declarado': float(row.get('PESO KGS', 0)),
+                        'BL': row.get('BL', ''),
+                        'fecha_programacion_cargue_descargue': fecha_programacion
+                    }
+
+                    nuevo_anuncio = self.control_anuncio_carga.crear_anuncio_carga(datos_anuncio)
+                    successful_records.append(nuevo_anuncio)
+
+                except Exception as record_error:
+                    self.mostrar_mensaje(f"ERROR AL GUARDAR: {record_error}", es_error=True)
+                    failed_records.append({
+                        'row_data': row.to_dict(),
+                        'error': str(record_error)
+                    })
+            # Provide feedback to the user
+            if successful_records:
+                self.mostrar_mensaje(f"Se guardaron {len(successful_records)} registros exitosamente."),
+                self.cerrar_modal(e)
+
+            if failed_records:
+                self.mostrar_mensaje(f"Error al guardar: {str(e)}", es_error=True)
+
+            # Close the modal after processing
+            self.cerrar_modal(e)
+            self.page.update()
+
+        except Exception as ex:
+            # Handle any unexpected errors
+            error_dialog = ft.AlertDialog(
+                title=ft.Text("Error"),
+                content=ft.Text(f"Error al guardar los registros: {ex}"),
+                actions=[
+                    ft.TextButton("Cerrar", on_click=self.cerrar_dialog)
+                ]
+            )
+            self.page.dialog = error_dialog
+            error_dialog.open = True
+            self.page.update()
+        
+    def mostrar_mensaje(self, mensaje, es_error=False):
+        """Muestra un mensaje utilizando el método de overlay de Flet."""
+        snack_bar = ft.SnackBar(
+            content=ft.Text(mensaje),
+            bgcolor=ft.Colors.RED if es_error else ft.Colors.GREEN
+        )
+        self.page.overlay.append(snack_bar)
+        snack_bar.open = True
+        self.page.update()
+
     def cerrar_modal(self, e):
         self.page.dialog.open = False
         self.page.update()
+
 
     def upload_excel(self, e: ft.FilePickerResultEvent):
         if not e.files:
@@ -273,15 +370,15 @@ class AnuncioCargaView(ft.Container):
 
         try:
             # Read the Excel file starting from row 5 (index 4) to get headers
-            df = pd.read_excel(e.files[0].path, header=3)
+            self.df = pd.read_excel(e.files[0].path, header=3)
 
             # Print diagnostic information
-            print("DataFrame Columns:", list(df.columns))
-            print("DataFrame Shape:", df.shape)
+            print("DataFrame Columns:", list(self.df.columns))
+            print("DataFrame Shape:", self.df.shape)
 
             # Ensure all columns are strings and handle NaN values
-            df = df.fillna("")
-            df = df.astype(str)
+            self.df = self.df.fillna("")
+            self.df = self.df.astype(str)
 
             def format_date(date_value):
                 try:
@@ -292,7 +389,7 @@ class AnuncioCargaView(ft.Container):
                     return str(date_value)
 
             # Dynamically create column list from the DataFrame
-            display_columns = list(df.columns)
+            display_columns = list(self.df.columns)
 
             # Dynamically create the data table for the modal
             data_table_modal = ft.DataTable(
@@ -315,7 +412,7 @@ class AnuncioCargaView(ft.Container):
             )
 
             # Populate the dynamic data table
-            for index, row in df.iterrows():
+            for index, row in self.df.iterrows():
 
                 # Create a row for the modal DataTable
                 # Use .get() method to safely handle missing columns
@@ -373,3 +470,15 @@ class AnuncioCargaView(ft.Container):
             self.page.dialog = error_dialog
             error_dialog.open = True
             self.page.update()
+
+    # def cargar_anuncios_carga(self):
+    #     anuncios_carga = self.control_anuncio_carga.obtener_anuncios_carga()
+    #     rows = []
+    #     for index, anuncio in enumerate(anuncios_carga):
+    #         rows.append(
+    #             ft.DataRow(
+    #                 cells=[
+    #                     ft.DataCell(ft.Text(str(index + 1), text_align=ft.TextAlign.CENTER)),
+    #                     ft.DataCell(ft.Text(anuncio.fecha_anuncio, text_align=ft.TextAlign.CENTER)),
+    #                     ft.DataCell(ft.Text(anuncio.cabezote, text_align=ft.TextAlign.CENTER)),
+    #                     ft.DataCell(ft.Text
