@@ -28,6 +28,13 @@ class AnuncioCargaView(ft.Container):
         self.controlador_producto = ControlProducto()
         self.controlador_tipo_producto = ControlTipoProducto()
         self.df = None
+        self.page_size = 50
+        self.current_page = 0
+        self.is_loading = False
+        self.all_loaded = False
+        
+        # Add loading indicator
+        self.loading_indicator = ft.ProgressBar(visible=False)
         self.go_home = create_home_button(page, lambda _: page.go("/"))
         self.cargar_excel = ft.IconButton(
             icon=ft.Icons.ADD_CIRCLE,
@@ -212,22 +219,25 @@ class AnuncioCargaView(ft.Container):
             vertical_lines=ft.BorderSide(width=1, color=ft.Colors.GREY_300),
             horizontal_lines=ft.BorderSide(width=1, color=ft.Colors.GREY_300),
         )
+        
+        self.data_table_column = ft.Row([
+            ft.Column([
+                self.data_table,
+                self.loading_indicator
+            ], scroll=ft.ScrollMode.ALWAYS, on_scroll=self.handle_scroll)
+        ],
+        height=400,
+        width='100%',
+        scroll=ft.ScrollMode.ALWAYS)
+                            
 
-        self.content = ft.Column(
-            controls=[
-                self.go_home,
-                self.cargar_excel,
-                ft.Text("Cargas Anunciadas", size=20, weight=ft.FontWeight.BOLD),
-                ft.Column(
-                    controls=[
-                        ft.Row([self.data_table], scroll=ft.ScrollMode.ADAPTIVE),
-                    ],
-                    horizontal_alignment=ft.CrossAxisAlignment.STRETCH,
-                    spacing=20,
-                    scroll=ft.ScrollMode.ADAPTIVE,
-                ),
-            ],
-        )
+        self.content = ft.Column([
+            self.go_home,
+            self.cargar_excel,
+            self.data_table_column
+        ])
+        
+        self.cargar_anuncios_carga()
         
     @staticmethod
     def generate_anuncio_carga_id():
@@ -239,6 +249,38 @@ class AnuncioCargaView(ft.Container):
         
         return letters + digits
 
+    def handle_scroll(self, e):
+        # Check if we've scrolled near the bottom
+        if (not self.is_loading and 
+            not self.all_loaded and 
+            e.pixels >= e.max_scroll_extent * 0.8):
+            self.load_more_data()
+    
+    def load_more_data(self):
+        self.is_loading = True
+        self.loading_indicator.visible = True
+        self.page.update()
+        
+        # Calculate offset
+        offset = self.current_page * self.page_size
+        
+        # Get next batch of records
+        new_anuncios = self.control_anuncio_carga.obtener_anuncios_carga_paginados(
+            limit=self.page_size, 
+            offset=offset
+        )
+        
+        if len(new_anuncios) < self.page_size:
+            self.all_loaded = True
+            
+        if new_anuncios:
+            self.current_page += 1
+            self.add_rows_to_table(new_anuncios)
+        
+        self.is_loading = False
+        self.loading_indicator.visible = False
+        self.page.update()
+        
     def ir_atras(self, _):
         self.page.go("/datos")
 
@@ -246,7 +288,10 @@ class AnuncioCargaView(ft.Container):
         # Create a file picker
         self.file_picker = ft.FilePicker(on_result=self.upload_excel)
         self.page.overlay.append(self.file_picker)
-        self.page.update()
+        self.anunciar_button = ft.ElevatedButton("ANUNCIAR", 
+            on_click=self.guardar_anuncio_carga,
+            disabled=True  # Start as disabled
+        )
         # Create the modal dialog without a predefined data table
         self.modal = ft.AlertDialog(
             title=ft.Text("Anunciar cargas", size=20, weight=ft.FontWeight.BOLD),
@@ -269,7 +314,7 @@ class AnuncioCargaView(ft.Container):
             ),
             actions=[
                 ft.TextButton("Cancelar", on_click=self.cerrar_modal),
-                ft.ElevatedButton("ANUNCIAR", on_click=self.guardar_anuncio_carga),
+                self.anunciar_button,
             ],
             actions_alignment=ft.MainAxisAlignment.END,
         )
@@ -277,8 +322,6 @@ class AnuncioCargaView(ft.Container):
         self.page.dialog = self.modal
         self.modal.open = True
         self.page.update()
-
-    
 
     def guardar_anuncio_carga(self, e):
         try:
@@ -331,22 +374,16 @@ class AnuncioCargaView(ft.Container):
             if failed_records:
                 self.mostrar_mensaje(f"Error al guardar: {str(e)}", es_error=True)
 
+            if hasattr(self, 'df'):
+                del self.df
+
             # Close the modal after processing
             self.cerrar_modal(e)
+            self.cargar_anuncios_carga()
             self.page.update()
 
-        except Exception as ex:
-            # Handle any unexpected errors
-            error_dialog = ft.AlertDialog(
-                title=ft.Text("Error"),
-                content=ft.Text(f"Error al guardar los registros: {ex}"),
-                actions=[
-                    ft.TextButton("Cerrar", on_click=self.cerrar_dialog)
-                ]
-            )
-            self.page.dialog = error_dialog
-            error_dialog.open = True
-            self.page.update()
+        except Exception:
+            self.mostrar_mensaje("Selecciona un archivo Excel", es_error=True)
         
     def mostrar_mensaje(self, mensaje, es_error=False):
         """Muestra un mensaje utilizando el método de overlay de Flet."""
@@ -359,9 +396,26 @@ class AnuncioCargaView(ft.Container):
         self.page.update()
 
     def cerrar_modal(self, e):
+        # Clear the DataFrame
+        if hasattr(self, 'df'):
+            del self.df
+
+        # Reset the modal content to its initial state
+        self.modal.content = ft.Row(
+            controls=[
+                ft.Container(
+                    content=ft.Text("No se ha cargado ningún archivo"),
+                )
+            ],
+            scroll=ft.ScrollMode.ALWAYS,
+        )
+
+        # Disable the anunciar button
+        self.anunciar_button.disabled = True
+
+        # Close the dialog
         self.page.dialog.open = False
         self.page.update()
-
 
     def upload_excel(self, e: ft.FilePickerResultEvent):
         if not e.files:
@@ -371,7 +425,7 @@ class AnuncioCargaView(ft.Container):
         try:
             # Read the Excel file starting from row 5 (index 4) to get headers
             self.df = pd.read_excel(e.files[0].path, header=3)
-
+            self.anunciar_button.disabled = False
             # Print diagnostic information
             print("DataFrame Columns:", list(self.df.columns))
             print("DataFrame Shape:", self.df.shape)
@@ -456,29 +510,73 @@ class AnuncioCargaView(ft.Container):
             self.page.update()
 
         except Exception as ex:
-            # Handle any errors during file upload or data processing
-            print(f"Error uploading Excel file: {ex}")
-            import traceback
+            self.mostrar_mensaje("No se pudo cargar el excel", es_error=True)
 
-            traceback.print_exc()  # This will print the full stack trace
-
-            # Show an error dialog to the user
-            error_dialog = ft.AlertDialog(
-                title=ft.Text("Error"),
-                content=ft.Text(f"No se pudo cargar el archivo Excel: {ex}"),
+    def add_rows_to_table(self, anuncios):
+        start_index = len(self.data_table.rows)
+        new_rows = []
+        
+        for index, anuncio in enumerate(anuncios, start=start_index):
+            new_rows.append(
+                ft.DataRow(
+                    cells=[
+                        ft.DataCell(ft.Text(str(index + 1))),
+                        ft.DataCell(ft.Text(anuncio.id_anuncio_carga, text_align=ft.TextAlign.CENTER)),
+                        ft.DataCell(ft.Text(anuncio.fecha_anuncio, text_align=ft.TextAlign.CENTER)),
+                        ft.DataCell(ft.Text(anuncio.cabezote, text_align=ft.TextAlign.CENTER)),
+                        ft.DataCell(ft.Text(anuncio.empresa_de_transporte, text_align=ft.TextAlign.CENTER)),
+                        ft.DataCell(ft.Text(anuncio.nit_empresa, text_align=ft.TextAlign.CENTER)),
+                        ft.DataCell(ft.Text(anuncio.remolque, text_align=ft.TextAlign.CENTER)),
+                        ft.DataCell(ft.Text(anuncio.tipo_vehiculo, text_align=ft.TextAlign.CENTER)),
+                        ft.DataCell(ft.Text(anuncio.nombre_conductor, text_align=ft.TextAlign.CENTER)),
+                        ft.DataCell(ft.Text(anuncio.numero_cedula, text_align=ft.TextAlign.CENTER)),
+                        ft.DataCell(ft.Text(anuncio.documento_guia_transporte, text_align=ft.TextAlign.CENTER)),
+                        ft.DataCell(ft.Text(anuncio.producto, text_align=ft.TextAlign.CENTER)),
+                        ft.DataCell(ft.Text(anuncio.cantidad_a_cargar_gls, text_align=ft.TextAlign.CENTER)),
+                        ft.DataCell(ft.Text(anuncio.origen_destino, text_align=ft.TextAlign.CENTER)),
+                        ft.DataCell(ft.Text(anuncio.enturnador, text_align=ft.TextAlign.CENTER)),
+                        ft.DataCell(ft.Text(anuncio.cant, text_align=ft.TextAlign.CENTER)),
+                        ft.DataCell(ft.Text(anuncio.orden_de_servicio, text_align=ft.TextAlign.CENTER)),
+                        ft.DataCell(ft.Text(anuncio.ingreso, text_align=ft.TextAlign.CENTER)),
+                        ft.DataCell(ft.Text(anuncio.retiro, text_align=ft.TextAlign.CENTER)),
+                        ft.DataCell(ft.Text(anuncio.nal, text_align=ft.TextAlign.CENTER)),
+                        ft.DataCell(ft.Text(anuncio.control_aduanero, text_align=ft.TextAlign.CENTER)),
+                        ft.DataCell(ft.Text(anuncio.cliente, text_align=ft.TextAlign.CENTER)),
+                        ft.DataCell(ft.Text(anuncio.nit_cliente, text_align=ft.TextAlign.CENTER)),
+                        ft.DataCell(ft.Text(anuncio.empresa_autorizada, text_align=ft.TextAlign.CENTER)),
+                        ft.DataCell(ft.Text(anuncio.nit_empresa_autorizada, text_align=ft.TextAlign.CENTER)),
+                        ft.DataCell(ft.Text(anuncio.nombre_barcaza, text_align=ft.TextAlign.CENTER)),
+                        ft.DataCell(ft.Text(anuncio.nombre_remolcador, text_align=ft.TextAlign.CENTER)),
+                        ft.DataCell(ft.Text(anuncio.numero_de_viaje, text_align=ft.TextAlign.CENTER)),
+                        ft.DataCell(ft.Text(anuncio.fecha_de_llegada, text_align=ft.TextAlign.CENTER)),
+                        ft.DataCell(ft.Text(anuncio.manifiesto, text_align=ft.TextAlign.CENTER)),
+                        ft.DataCell(ft.Text(anuncio.fecha_llegada, text_align=ft.TextAlign.CENTER)),
+                        ft.DataCell(ft.Text(anuncio.declaracion_importacion, text_align=ft.TextAlign.CENTER)),
+                        ft.DataCell(ft.Text(anuncio.fecha_declaracion, text_align=ft.TextAlign.CENTER)),
+                        ft.DataCell(ft.Text(anuncio.levante, text_align=ft.TextAlign.CENTER)),
+                        ft.DataCell(ft.Text(anuncio.fecha_levante, text_align=ft.TextAlign.CENTER)),
+                        ft.DataCell(ft.Text(anuncio.numero_contenedor, text_align=ft.TextAlign.CENTER)),
+                        ft.DataCell(ft.Text(anuncio.longitud, text_align=ft.TextAlign.CENTER)),
+                        ft.DataCell(ft.Text(anuncio.tipo_contenedor, text_align=ft.TextAlign.CENTER)),
+                        ft.DataCell(ft.Text(anuncio.tara, text_align=ft.TextAlign.CENTER)),
+                        ft.DataCell(ft.Text(anuncio.peso_declarado, text_align=ft.TextAlign.CENTER)),
+                        ft.DataCell(ft.Text(anuncio.cantidad_a_cargar, text_align=ft.TextAlign.CENTER)),
+                        ft.DataCell(ft.Text(anuncio.imo, text_align=ft.TextAlign.CENTER)),
+                        ft.DataCell(ft.Text(anuncio.precintos_de_seguridad, text_align=ft.TextAlign.CENTER)),
+                        ft.DataCell(ft.Text(anuncio.observaciones, text_align=ft.TextAlign.CENTER)),
+                    ]
+                )
             )
-            self.page.dialog = error_dialog
-            error_dialog.open = True
-            self.page.update()
-
-    # def cargar_anuncios_carga(self):
-    #     anuncios_carga = self.control_anuncio_carga.obtener_anuncios_carga()
-    #     rows = []
-    #     for index, anuncio in enumerate(anuncios_carga):
-    #         rows.append(
-    #             ft.DataRow(
-    #                 cells=[
-    #                     ft.DataCell(ft.Text(str(index + 1), text_align=ft.TextAlign.CENTER)),
-    #                     ft.DataCell(ft.Text(anuncio.fecha_anuncio, text_align=ft.TextAlign.CENTER)),
-    #                     ft.DataCell(ft.Text(anuncio.cabezote, text_align=ft.TextAlign.CENTER)),
-    #                     ft.DataCell(ft.Text
+        
+        self.data_table.rows.extend(new_rows)
+        
+    def cargar_anuncios_carga(self):
+        # Reset pagination
+        self.current_page = 0
+        self.all_loaded = False
+        self.data_table.rows = []
+        
+        # Load initial data
+        self.load_more_data()
+        
+                        

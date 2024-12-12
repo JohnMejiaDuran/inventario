@@ -34,3 +34,6 @@ class ControlAnuncioCarga:
             except IntegrityError:
                 session.rollback()
                 raise ValueError("Error de integridad al guardar el anuncio de carga")
+            
+        def obtener_anuncios_carga_paginados(self, limit=50, offset=0):
+            return session.query(AnuncioCarga).order_by(AnuncioCarga.fecha_anuncio.desc()).limit(limit).offset(offset).all()

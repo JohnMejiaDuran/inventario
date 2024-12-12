@@ -38,7 +38,7 @@ class AnuncioCarga(Base):
     declaracion_importacion = Column(String(20), nullable=True)
     fecha_declaracion = Column(Date, nullable=True)
     levante = Column(String(20), nullable=True)
-    fecha_leante = Column(Date, nullable=True)
+    fecha_levante = Column(Date, nullable=True)
     numero_contenedor = Column(String(20), nullable=True)
     longitud = Column(Integer, nullable=True)
     tipo_contenedor = Column(String(20), nullable=True)
